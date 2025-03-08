@@ -32,11 +32,18 @@ const { headline = "",title, subtitle, buttons = defaultButtons, eventDate = def
     id="hero"
     class="items-center text-sm font-medium justify-center pb-48 lg:px-20 pt-32 lg:pt-44 relative flex min-h-[100svh] bg-[#F7F7F7]"
 >
+
+<div class="absolute inset-0 z-0 opacity-40">
+	<div class="bg-animation-blob bg-[#4ECDC4] absolute top-[10%] right-[10%] w-64 h-64 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+	<div class="bg-animation-blob bg-[#1A7A64] absolute top-[20%] left-[20%] w-72 h-72 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+	<div class="bg-animation-blob bg-[#0D3B66] absolute bottom-[15%] left-[30%] w-80 h-80 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
+	<div class="bg-animation-blob bg-[#FF9F1C] absolute bottom-[30%] right-[20%] w-56 h-56 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-6000"></div>
+</div>
     <Container>
         <div class="items-center flex-col w-full m-auto">
             <div class="text-center max-w-5xl mx-auto mb-16">
-                
-                {headline && 
+
+                {headline &&
                     <h1
                         data-hero-reveal
                         class="headline text-4xl md:text-6xl lg:text-7xl leading-tight mb-2 font-extrabold text-[#2C3E50]"
@@ -164,15 +171,49 @@ const { headline = "",title, subtitle, buttons = defaultButtons, eventDate = def
         outline: 2px solid #4ECDC4;
         outline-offset: 2px;
     }
-    
+
     /* Add a highlight effect for the icon */
     .register-button svg {
         transition: transform 0.3s ease;
         color: #FF9F1C; /* Warning/highlight color */
     }
-    
+
     .register-button:hover svg {
         transform: translateX(2px) translateY(-2px);
+    }
+
+	.bg-animation-blob {
+        opacity: 0.7;
+    }
+	@keyframes blob {
+        0% {
+            transform: translate(0px, 0px) scale(1);
+        }
+        33% {
+            transform: translate(30px, -50px) scale(1.1);
+        }
+        66% {
+            transform: translate(-20px, 20px) scale(0.9);
+        }
+        100% {
+            transform: translate(0px, 0px) scale(1);
+        }
+    }
+
+	.animate-blob {
+        animation: blob 15s infinite alternate;
+    }
+
+    .animation-delay-2000 {
+        animation-delay: 2s;
+    }
+
+    .animation-delay-4000 {
+        animation-delay: 4s;
+    }
+
+    .animation-delay-6000 {
+        animation-delay: 6s;
     }
 </style>
 
