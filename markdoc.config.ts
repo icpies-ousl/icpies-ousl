@@ -60,13 +60,15 @@ export default defineMarkdocConfig({
 			render: component("./src/components/primitives/Flex.astro"),
 		},
 		Hero: {
-			attributes: {
-				title: { type: String, render: "title", required: true },
-				subtitle: { type: String, render: "subtitle", required: true },
-				buttons: { type: Array, render: "buttons", required: true },
-			},
-			render: component("./src/components/sections/Hero.astro"),
-		},
+					attributes: {
+						headline: { type: String, render: "headline" }, // Add headline attribute
+						title: { type: String, render: "title", required: true },
+						subtitle: { type: String, render: "subtitle", required: true },
+						eventDate: { type: String, render: "eventDate" }, // Add eventDate attribute
+						buttons: { type: Array, render: "buttons", required: true },
+					},
+					render: component("./src/components/sections/Hero.astro"),
+				},
 		BlogLatest: {
 			attributes: {
 				title: { type: String, render: "title", required: true },

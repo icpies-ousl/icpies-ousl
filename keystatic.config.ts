@@ -373,6 +373,9 @@ export default config({
 							description: "Sezione hero dell'homepage",
 							icon: HeroIcon({ ariaHidden: true }),
 							schema: {
+								headline: fields.text({  
+                                    label: "Headline",
+                                }),
 								title: fields.text({
 									label: "Title",
 									validation: {
@@ -385,6 +388,10 @@ export default config({
 										isRequired: true,
 									},
 								}),
+								eventDate: fields.text({  // Add eventDate field
+                                    label: "Event Date",
+                                    description: "Format: YYYY-MM-DDThh:mm:ss (e.g. 2025-08-28T09:00:00)",
+                                }),
 								buttons: fields.array(
 									fields.object({
 										title: fields.text({ label: "Title" }),

@@ -51,18 +51,27 @@
 		"@types/alpinejs": "^3.13.10",
 		"@types/react": "^18.3.3",
 		"@types/react-dom": "^18.3.0",
-		"@vite-pwa/assets-generator": "^0.2.4",
+		"@vite-pwa/assets-generator": "^0.2.6",
 		"@vite-pwa/astro": "^0.4.0",
 		"astro-icon": "^1.1.0",
 		"astro-robots-txt": "^1.0.0",
 		"astro-seo": "^0.8.3",
 		"satori": "^0.10.13",
 		"sharp": "0.33.4",
+		"sharp-ico": "^0.1.5",
 		"tailwindcss": "^3.4.3",
 		"workbox-window": "^7.1.0"
 	},
 	"overrides": {
 		"gsap": "^3.12.5",
 		"sharp": "0.33.4"
+	},
+	"pnpm": {
+		"ignoredBuiltDependencies": [
+			"@biomejs/biome",
+			"esbuild",
+			"sharp",
+			"workerd"
+		]
 	}
 }
