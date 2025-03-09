@@ -373,7 +373,7 @@ export default config({
 							description: "Sezione hero dell'homepage",
 							icon: HeroIcon({ ariaHidden: true }),
 							schema: {
-								headline: fields.text({  
+								headline: fields.text({
                                     label: "Headline",
                                 }),
 								title: fields.text({
@@ -448,6 +448,36 @@ export default config({
 										isRequired: true,
 									},
 								}),
+								aboutTitle: fields.text({
+									label: "About Title",
+								}),
+								aboutDescription: fields.text({
+									label: "About Description",
+									multiline: true,
+								}),
+								aboutTheme: fields.text({
+									label: "Conference Theme",
+								}),
+								aboutLogo: fields.image({
+									label: "About Logo",
+									directory: "src/assets/pages",
+									publicPath: "/src/assets/pages/",
+								}),
+								logos: fields.object({
+									ousl: fields.image({
+										label: "OUSL Logo",
+										directory: "src/assets/pages/homepage",
+										publicPath: "/src/assets/pages/homepage/",
+									}),
+									cessd: fields.image({
+										label: "CESSD Logo",
+										directory: "src/assets/pages/homepage",
+										publicPath: "/src/assets/pages/homepage/",
+									}),
+								}, {
+									label: "Organization Logos",
+								}),
+
 								services: fields.array(
 									fields.object({
 										title: fields.text({ label: "Title" }),
