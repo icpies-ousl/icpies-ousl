@@ -88,6 +88,7 @@ export default defineMarkdocConfig({
 				aboutTitle: { type: String, render: "aboutTitle" },
 				aboutDescription: { type: String, render: "aboutDescription" },
 				aboutTheme: { type: String, render: "aboutTheme" },
+				aboutLogo: { type: String, render: "aboutLogo" },
 				services: { type: Array, render: "services", required: true },
 				logos: { type: Object, render: "logos" }, // Changed from Array to Object type
 			},
