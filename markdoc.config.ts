@@ -138,5 +138,14 @@ export default defineMarkdocConfig({
 			},
 			render: component("./src/components/sections/Contact.astro"),
 		},
+				// Add this to your existing tags object
+		ImportantDates: {
+			attributes: {
+				title: { type: String, render: "title", required: true },
+				subtitle: { type: String, render: "subtitle" },
+				dates: { type: Array, render: "dates", required: true },
+			},
+			render: component("./src/components/sections/ImportantDates.astro"),
+		},
 	},
 });

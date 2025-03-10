@@ -496,6 +496,49 @@ export default config({
 								),
 							},
 						}),
+												// Add this to your components object in the content field schema
+						ImportantDates: block({
+							label: "Important Dates",
+							description: "Display conference important dates and deadlines",
+							icon: GeneralIcon({ ariaHidden: true }),
+							schema: {
+								title: fields.text({
+									label: "Title",
+									validation: {
+										isRequired: true,
+									},
+									defaultValue: "Important Dates",
+								}),
+								subtitle: fields.text({
+									label: "Subtitle",
+								}),
+								dates: fields.array(
+									fields.object({
+										event: fields.text({
+											label: "Event Name",
+											validation: { isRequired: true }
+										}),
+										date: fields.text({
+											label: "Date",
+											description: "Format: YYYY-MM-DD (e.g. 2025-03-10)",
+											validation: { isRequired: true }
+										}),
+										isPassed: fields.checkbox({
+											label: "Mark as Passed",
+											description: "Override automatic date checking"
+										}),
+										isHighlighted: fields.checkbox({
+											label: "Highlight this Date",
+											description: "Make this date stand out as important"
+										}),
+									}),
+									{
+										label: "Dates",
+										itemLabel: (props) => `${props.fields.event.value} - ${props.fields.date.value}`,
+									}
+								),
+							},
+						}),
 						VideoEffect: block({
 							label: "VideoEffect",
 							description: "VideoEffect",

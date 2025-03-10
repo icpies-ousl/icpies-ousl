@@ -31,22 +31,29 @@ const images = import.meta.glob<{ default: ImageMetadata }>(
 <div class="pt-36" id="services">
     {aboutTitle && (
         <div class="mb-16 p-8 bg-[#F7F7F7] rounded-xl border-l-4 border-[#1A7A64] shadow-md">
-            <!-- Enhanced Logo Section -->
-            {aboutLogo && (
-                <div class="flex justify-center mb-8">
-                    <div class="conference-logo-container relative">
-                        <div class="absolute inset-0 rounded-full bg-gradient-to-br from-[#4ECDC4]/30 via-[#1A7A64]/20 to-[#0D3B66]/30 blur-md"></div>
-                        <div class="absolute inset-0 animate-pulse-slow opacity-60 rounded-full bg-[#1A7A64]/10"></div>
-                        <Image
-                            src={Logo}
-                            alt="ICPIES 2025 Logo"
-                            class="relative z-10 w-40 h-40 object-contain"
-                            width="160"
-                            height="160"
-                        />
-                    </div>
-                </div>
-            )}
+           	{aboutLogo && (
+				<div class="flex justify-center mb-12">
+					<div class="conference-logo-container relative">
+						<!-- Larger glow effect behind logo -->
+            <div class="glow-effect absolute inset-0 scale-125 rounded-full bg-gradient-to-br from-[#4ECDC4]/40 via-[#1A7A64]/30 to-[#0D3B66]/40 blur-xl"></div>
+            <!-- Enhanced pulsing effect -->
+            <div class="absolute inset-0 scale-110 animate-pulse-slow opacity-70 rounded-full bg-[#1A7A64]/15"></div>
+            <!-- Decorative ring -->
+            <div class="decorative-ring absolute inset-0 scale-105 border-4 border-[#1A7A64]/20 rounded-full"></div>
+            <!-- Larger logo -->
+						<!-- Larger logo -->
+						<Image
+							src={Logo}
+							alt="ICPIES 2025 Logo"
+							class="astro-img relative z-10 w-56 h-56 object-contain p-2"
+							width="224"
+							height="224"
+						/>
+						<div class="absolute inset-0 bg-white/10 rounded-full opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+					</div>
+				</div>
+			)}
+
 
             <div class="text-center max-w-4xl mx-auto mb-6">
                 <h2 class="text-3xl font-bold text-[#2C3E50] mb-3">
@@ -73,8 +80,17 @@ const images = import.meta.glob<{ default: ImageMetadata }>(
                             {aboutTheme}
                         </p>
                     </div>
+
+					<div class="flex justify-center mt-8">
+            <div class="indexed-journal-badge bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] text-white text-xs md:text-sm font-bold px-4 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 whitespace-nowrap">
+                <span class="inline-block w-2 h-2 bg-white rounded-full animate-ping-slow opacity-75"></span>
+				Selected Papers in Scopus-Indexed Journal
+            </div>
+        </div>
+
                 </div>
             )}
+
         </div>
     )}
 
@@ -169,35 +185,123 @@ OUSL                    </h3>
     }
 
     /* New styles for the enhanced logo */
-    .conference-logo-container {
-        width: 160px;
-        height: 160px;
+	.conference-logo-container {
+        width: 224px;
+        height: 224px;
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 50%;
         padding: 10px;
         position: relative;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        margin: 0 auto;
+        overflow: hidden;
     }
 
-    .conference-logo-container:hover {
-        transform: scale(1.05);
+	.conference-logo-container:hover {
+        transform: scale(1.12);
+        box-shadow: 0 20px 60px rgba(26, 122, 100, 0.3);
+        z-index: 10;
+    }
+
+	.conference-logo-container::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at center, rgba(78, 205, 196, 0), rgba(78, 205, 196, 0.2));
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        pointer-events: none;
+    }
+
+	.conference-logo-container:hover::after {
+        opacity: 1;
+    }
+
+    /* Make the image itself slightly larger on hover */
+    .conference-logo-container img,
+    .conference-logo-container .astro-img {
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .conference-logo-container:hover img,
+    .conference-logo-container:hover .astro-img {
+        transform: scale(1.08);
+    }
+
+    /* Enhance the decorative ring on hover */
+    .conference-logo-container .decorative-ring {
+        transition: all 0.5s ease;
+    }
+
+	.conference-logo-container:hover .decorative-ring {
+        border-width: 6px;
+        border-color: rgba(26, 122, 100, 0.3);
+    }
+
+    /* Make the glow effect more prominent on hover */
+    .conference-logo-container .glow-effect {
+        transition: all 0.5s ease;
+    }
+
+    .conference-logo-container:hover .glow-effect {
+        filter: blur(25px);
+        opacity: 0.8;
+        transform: scale(1.15);
+    }
+
+	.indexed-journal-badge {
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        animation: gentle-float 3s ease-in-out infinite;
+    }
+
+    .conference-logo-container:hover .indexed-journal-badge {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(26, 122, 100, 0.4);
+    }
+
+	@keyframes gentle-float {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-3px);
+        }
+    }
+
+    @keyframes ping-slow {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 0.85;
+        }
+        50% {
+            transform: scale(1.5);
+            opacity: 0.5;
+        }
+    }
+
+	.animate-ping-slow {
+        animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
     }
 
     @keyframes pulse-slow {
         0% {
             transform: scale(0.95);
-            opacity: 0.5;
+            opacity: 0.6;
         }
         50% {
-            transform: scale(1.05);
-            opacity: 0.7;
+            transform: scale(1.1);
+            opacity: 0.8;
         }
         100% {
             transform: scale(0.95);
-            opacity: 0.5;
+            opacity: 0.6;
         }
     }
 

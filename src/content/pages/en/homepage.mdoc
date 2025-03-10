@@ -20,7 +20,7 @@ seo:
 {% Container %}
 
 {% Services
-   title="Organized by <span class=\"text-[#FF9F1C]\">The Open University of Sri Lanka</span> & <span class=\"text-[#1A7A64]\"> Centre for Environmental Studies & Sustainable Development </span>"
+   title="Organized by <span class=\"text-[#FF9F1C]\"><span class=\"text-[#1A7A64]\"> CESSD</span>, The Open University of Sri Lanka</span>"
    aboutTitle="About ICPIES 2025"
    aboutDescription="The International Conference on Plastics, Innovations, and Environmental Sustainability (ICPIES) 2025 brings together experts, researchers, policymakers, industry leaders, and stakeholders to explore cutting-edge advancements in plastics science, sustainable innovations, and environmental solutions. This conference serves as a platform for sharing knowledge, pioneering technologies, and best practices to mitigate plastic pollution, promote circular economy strategies, and drive sustainable transformations in plastics recycling and waste management."
    aboutTheme="Eco-Driven Innovations: Advancing Plastics, Circular Economy & Climate Action for a Sustainable Future"
@@ -35,6 +35,19 @@ seo:
      {title: "Climate Action", description: "Addressing the intersection of plastics and climate change, including carbon footprint reduction strategies and policy frameworks.", icon: "/src/assets/pages/homepage/paidmedia-service.png"}
    ] /%}
 
+
+   {% ImportantDates
+	title="Important Conference Dates"
+	subtitle="Mark your calendar for these key deadlines"
+	dates=[
+	  {event: "Call for Abstracts", date: "2025-03-10", isPassed: false},
+	  {event: "Deadline for Abstracts Submission", date: "2025-04-04", isPassed: false, isHighlighted: true},
+	  {event: "Notification of Acceptance", date: "2025-05-02", isPassed: false},
+	  {event: "Deadline for Selected Full Papers Submission", date: "2025-06-06", isPassed: false},
+	  {event: "Camera-ready Copy Submission", date: "2025-06-20", isPassed: false},
+	  {event: "Early Bird Registration", date: "2025-07-06", isPassed: false, isHighlighted: true},
+	  {event: "Registration Deadline", date: "2025-07-18", isPassed: false}
+	] /%}
 {% RecentWork
    title="Conference Tracks"
    buttons=[{title: "View all tracks", href: "/works", style: "button", icon: "iconamoon:arrow-top-right-1-thin"}] /%}
