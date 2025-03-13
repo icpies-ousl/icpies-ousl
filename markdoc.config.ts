@@ -146,16 +146,5 @@ export default defineMarkdocConfig({
 			},
 			render: component("./src/components/sections/ImportantDates.astro"),
 		},
-
-				ConferenceTracks: {
-				  attributes: {
-					title: { type: String, render: "title" },
-					description: { type: String, render: "description" },
-					tracks: { type: Array, render: "tracks", required: true },
-					showFullDetails: { type: Boolean, render: "showFullDetails" },
-					viewAllLink: { type: String, render: "viewAllLink" }
-				  },
-				  render: component("./src/components/sections/ConferenceTracks.astro"),
-				},
 	},
 });
