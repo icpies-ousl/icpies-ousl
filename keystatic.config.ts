@@ -149,7 +149,6 @@ export default config({
 		pages: collection({
 			label: "Pages",
 			slugField: "title",
-			path: "src/content/pages/it/*",
 			entryLayout: "content",
 			columns: ["title", "lastUpdateDate"],
 			previewUrl: "/{slug}",
@@ -367,6 +366,71 @@ export default config({
 									defaultValue: false,
 								}),
 							},
+						}),
+												// In the components section of your content field schema
+						ConferenceTracks: block({
+						  label: "Conference Tracks",
+						  description: "Display research tracks for the conference",
+						  icon: GeneralIcon({ ariaHidden: true }),
+						  schema: {
+							title: fields.text({
+							  label: "Title",
+							  defaultValue: "Research Tracks"
+							}),
+							description: fields.text({
+							  label: "Description",
+							  multiline: true
+							}),
+							showFullDetails: fields.checkbox({
+							  label: "Show Full Details",
+							  description: "Display complete information for each track",
+							  defaultValue: false
+							}),
+							viewAllLink: fields.text({
+							  label: "View All Link",
+							  description: "URL for the 'View All Tracks' button",
+							  defaultValue: "/tracks"
+							}),
+							tracks: fields.array(
+							  fields.object({
+								title: fields.text({
+								  label: "Title",
+								  validation: { isRequired: true }
+								}),
+								subtitle: fields.text({
+								  label: "Subtitle"
+								}),
+								image: fields.text({
+								  label: "Image Path",
+								  description: "Path to the track image (e.g., /images/tracks/track1.jpg)",
+								  validation: { isRequired: true }
+								}),
+								description: fields.text({
+								  label: "Description",
+								  multiline: true,
+								  validation: { isRequired: true }
+								}),
+								icon: fields.text({
+								  label: "Icon Name",
+								  description: "Name of the icon to use (e.g., flask, recycle)",
+								  validation: { isRequired: true }
+								}),
+								topics: fields.array(
+								  fields.text({
+									label: "Topic"
+								  }),
+								  {
+									label: "Research Topics",
+									itemLabel: (props) => props.value
+								  }
+								)
+							  }),
+							  {
+								label: "Tracks",
+								itemLabel: (props) => props.fields.title.value
+							  }
+							)
+						  }
 						}),
 						Hero: block({
 							label: "Hero",

@@ -4,6 +4,8 @@ import { Image } from "astro:assets";
 import Logo from "/src/assets/pages/homepage/icpies_logo.png";
 import OUSLLogo from "/src/assets/pages/homepage/logo_ousl.png"
 import CESSDLogo from "/src/assets/pages/homepage/cessd_logo.png"
+import UOMLogo from "/src/assets/pages/homepage/logo_uom.png"
+import OUSLPlasticsLogo from "/src/assets/pages/homepage/logo-LessPlastic.png"
 interface Props {
     title: string;
     aboutTitle?: string;
@@ -18,6 +20,9 @@ interface Props {
     logos?: {
         ousl?: string; // Path to OUSL logo
         cessd?: string; // Path to CESSD logo
+		uom?: string; // Path to UOM logo
+		ouslPlastics?: string; // Path to OUSL Plastics logo
+		srilanka?: string; // Path to Sri Lanka logo
     };
 }
 
@@ -117,13 +122,9 @@ const images = import.meta.glob<{ default: ImageMetadata }>(
                             />
                         </div>
                     )}
-                    <h3 class="text-xl font-bold text-[#FF9F1C] text-center relative z-10 group-hover:text-[#FF8C00] transition-colors duration-300">
-OUSL                    </h3>
                     <div class="w-16 h-1 bg-[#FF9F1C]/30 rounded-full mt-2 mb-3 group-hover:bg-[#FF9F1C]/50 transition-colors duration-300"></div>
                 </div>
             </div>
-
-            <div class="flex items-center text-2xl font-bold text-[#2C3E50]/60 mx-4">&</div>
 
             <div class="organizer-card">
                 <div class="relative flex flex-col items-center p-6 bg-white rounded-xl shadow-md border border-[#1A7A64]/20 transform transition-all duration-300 hover:scale-105 hover:shadow-lg group">
@@ -139,9 +140,42 @@ OUSL                    </h3>
                             />
                         </div>
                     )}
-                    <h3 class="text-xl font-bold text-[#1A7A64] text-center relative z-10 group-hover:text-[#156A54] transition-colors duration-300">
-                        CESSD
-                    </h3>
+                    <div class="w-16 h-1 bg-[#1A7A64]/30 rounded-full mt-2 mb-3 group-hover:bg-[#1A7A64]/50 transition-colors duration-300"></div>
+                </div>
+            </div>
+
+			<div class="organizer-card">
+                <div class="relative flex flex-col items-center p-6 bg-white rounded-xl shadow-md border border-[#1A7A64]/20 transform transition-all duration-300 hover:scale-105 hover:shadow-lg group">
+                    <div class="absolute inset-0 bg-gradient-to-br from-[#1A7A64]/5 to-[#1A7A64]/20 rounded-xl opacity-50"></div>
+                    {logos.cessd && (
+                        <div class="w-32 h-32 flex items-center justify-center mb-4 relative z-10">
+                            <Image
+                                src={UOMLogo}
+                                alt="CESSD Logo"
+                                width="128"
+                                height="128"
+                                class="object-contain"
+                            />
+                        </div>
+                    )}
+                    <div class="w-16 h-1 bg-[#1A7A64]/30 rounded-full mt-2 mb-3 group-hover:bg-[#1A7A64]/50 transition-colors duration-300"></div>
+                </div>
+            </div>
+
+			<div class="organizer-card">
+                <div class="relative flex flex-col items-center p-6 bg-white rounded-xl shadow-md border border-[#1A7A64]/20 transform transition-all duration-300 hover:scale-105 hover:shadow-lg group">
+                    <div class="absolute inset-0 bg-gradient-to-br from-[#1A7A64]/5 to-[#1A7A64]/20 rounded-xl opacity-50"></div>
+                    {logos.cessd && (
+                        <div class="w-32 h-32 flex items-center justify-center mb-4 relative z-10">
+                            <Image
+                                src={OUSLPlasticsLogo}
+                                alt="CESSD Logo"
+                                width="128"
+                                height="128"
+                                class="object-contain"
+                            />
+                        </div>
+                    )}
                     <div class="w-16 h-1 bg-[#1A7A64]/30 rounded-full mt-2 mb-3 group-hover:bg-[#1A7A64]/50 transition-colors duration-300"></div>
                 </div>
             </div>
@@ -178,6 +212,34 @@ OUSL                    </h3>
         100% {
             transform: translateY(0px);
         }
+    }
+
+	.truncate-title {
+        position: relative;
+        overflow: visible;
+        height: auto;
+        min-height: 1.75rem;
+    }
+
+	.title-short {
+        display: block;
+        transition: opacity 0.3s ease;
+    }
+
+	.title-full {
+        max-width: 100%;
+        text-align: center;
+        padding: 0.5rem;
+        background-color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        z-index: 20;
+        top: calc(100% + 5px);
+        font-size: 0.9rem;
+    }
+
+	.group:hover .title-short {
+        opacity: 0;
     }
 
     .organizer-card:hover {

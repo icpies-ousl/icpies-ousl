@@ -11,23 +11,26 @@ seo:
 ---
 
 {% Hero
-   headline="Eco-Driven Innovations 🌱"
-   title="Advancing <u>Plastics</u>, Circular Economy & Climate Action for a <u>Sustainable Future</u> 🌎"
-   subtitle="2nd International Conference on Plastics, Innovations and Environmental Sustainability (ICPIES) 2025"
+   headline="2nd International Conference on Plastics, Innovations and Environmental Sustainability (ICPIES) 2025"
+   title="Eco-Driven Innovations 🌱"
+   subtitle="Advancing <u>Plastics</u>, Circular Economy & Climate Action for a <u>Sustainable Future</u> 🌎"
    eventDate="2025-08-28T09:00:00"
    buttons=[{title: "Register Now", href: "/contact", style: "button", icon: "iconamoon:arrow-top-right-1-thin"}] /%}
 
 {% Container %}
 
 {% Services
-   title="Organized by <span class=\"text-[#FF9F1C]\"><span class=\"text-[#1A7A64]\"> CESSD</span>, The Open University of Sri Lanka</span>"
+   title="Organized by"
    aboutTitle="About ICPIES 2025"
    aboutDescription="The International Conference on Plastics, Innovations, and Environmental Sustainability (ICPIES) 2025 brings together experts, researchers, policymakers, industry leaders, and stakeholders to explore cutting-edge advancements in plastics science, sustainable innovations, and environmental solutions. This conference serves as a platform for sharing knowledge, pioneering technologies, and best practices to mitigate plastic pollution, promote circular economy strategies, and drive sustainable transformations in plastics recycling and waste management."
    aboutTheme="Eco-Driven Innovations: Advancing Plastics, Circular Economy & Climate Action for a Sustainable Future"
    aboutLogo="/src/assets/pages/homepage/icpies_logo.png"
    logos={
 	ousl: "/src/assets/pages/homepage/logo_ousl.png",
-	cessd: "/src/assets/pages/homepage/cessd_logo.png"
+	cessd: "/src/assets/pages/homepage/cessd_logo.png",
+	uom: "/src/assets/pages/homepage/logo_uom.png",
+	ouslPlastics: "/src/assets/pages/homepage/logo_ousl_plastics.png",
+	srilanka: "/src/assets/pages/homepage/srilanka_logo.png"
   }
    services=[
      {title: "Sustainable Plastics", description: "Exploring biodegradable alternatives, compostable materials, and innovations in plastic reduction strategies across industries.", icon: "/src/assets/pages/homepage/marketing-service.png"},
@@ -40,22 +43,34 @@ seo:
 	title="Important Conference Dates"
 	subtitle="Mark your calendar for these key deadlines"
 	dates=[
-	  {event: "Call for Abstracts", date: "2025-03-10", isPassed: false},
-	  {event: "Deadline for Abstracts Submission", date: "2025-04-04", isPassed: false, isHighlighted: true},
+	  {event: "Call for Abstracts", date: "2025-03-10", isPassed: false, isHighlighted: true},
+	  {event: "Deadline for Abstracts Submission", date: "2025-04-04", isPassed: false, isHighlighted: false},
 	  {event: "Notification of Acceptance", date: "2025-05-02", isPassed: false},
-	  {event: "Deadline for Selected Full Papers Submission", date: "2025-06-06", isPassed: false},
-	  {event: "Camera-ready Copy Submission", date: "2025-06-20", isPassed: false},
-	  {event: "Early Bird Registration", date: "2025-07-06", isPassed: false, isHighlighted: true},
-	  {event: "Registration Deadline", date: "2025-07-18", isPassed: false}
+	  {event: "Deadline for Selected Full Papers Submission", date: "2025-06-06", isPassed: false, isHighlighted: false},
+	  {event: "Camera-ready Copy Submission", date: "2025-06-20", isPassed: false, isHighlighted: false},
+	  {event: "Early Bird Registration", date: "2025-07-06", isPassed: false, isHighlighted: false},
+	  {event: "Registration Deadline", date: "2025-07-18", isPassed: false, isHighlighted: false},
 	] /%}
+
+
+	<!-- Remove the RecentWork component as it's now replaced by ConferenceTracks -->
+
+	<!-- Remove or comment out the RecentWork component since it's redundant -->
+	<!-- {% RecentWork
+	   title="Conference Tracks"
+	   buttons=[{title: "View all tracks", href: "/works", style: "button", icon: "iconamoon:arrow-top-right-1-thin"}] /%} -->
+
+	<!-- If you want a view all button, add it to the ConferenceTracks component parameters -->
+
+
 {% RecentWork
    title="Conference Tracks"
    buttons=[{title: "View all tracks", href: "/works", style: "button", icon: "iconamoon:arrow-top-right-1-thin"}] /%}
 
-{% Testimonial
+<!-- {% Testimonial
    testimonial="[Company] built us an amazing website that turned all our traffic into new leads. Their work has boosted our business immensely!"
-   name="Jane Doe" /%}
+   name="Jane Doe" /%} -->
 
-{% BlogLatest title="From Blog" /%}
+<!-- {% BlogLatest title="From Blog" /%} -->
 
 {% /Container %}
