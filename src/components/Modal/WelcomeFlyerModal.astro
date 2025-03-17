@@ -1,14 +1,9 @@
 ---
 // Props for potential configuration options
-interface Props {
-  imagePath?: string;
-  altText?: string;
-}
+import  Flyer from "/src/assets/pages/homepage/welcomeflyer.jpg";
+import  { Image } from "astro:assets";
 
-const {
-  imagePath = "/src/assets/pages/homepage/welcomeflyer.jpg",
-  altText = "ICPIES 2025 Conference Flyer"
-} = Astro.props;
+
 ---
 
 <div id="flyerModal" class="modal-overlay">
@@ -20,7 +15,8 @@ const {
       </svg>
     </button>
     <div class="modal-image-container">
-      <img src={imagePath} alt={altText} class="modal-image" />
+      <Image
+	   src={Flyer} alt="Welcome Flyer" class="modal-image" />
     </div>
     <div class="modal-footer">
       <button class="modal-action-button">Register Now</button>
