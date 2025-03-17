@@ -8,6 +8,7 @@ import LoadingIndicator from "@/components/primitives/LoadingIndicator.astro";
 import Widget from "@/components/primitives/Widget.astro";
 import { getLocalizedSettings } from "@/lib/localization-helpers";
 import type { SEOProps } from "astro-seo";
+import WelcomeFlyerModal from "@/components/Modal/WelcomeFlyerModal.astro";
 
 const currentLocale = Astro.currentLocale;
 
@@ -28,6 +29,7 @@ const { seo } = Astro.props;
 		<LoadingIndicator />
 		<LinesWrapper />
 		<Navigation showTopBar />
+		<WelcomeFlyerModal />
 		<slot />
 		{widget.enabled && <Widget />}
 		<!-- <Footer /> -->
