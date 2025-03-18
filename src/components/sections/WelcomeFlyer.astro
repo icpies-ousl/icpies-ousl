@@ -18,7 +18,7 @@ const {
 } = Astro.props;
 ---
 
-<div class="welcome-flyer-section py-24 top-20 rounded-lg relative overflow-hidden">
+<div class="welcome-flyer-section py-24 rounded-lg relative overflow-hidden">
   <!-- Animated background elements -->
   <div class="animated-bg-element"></div>
   <div class="animated-bg-element delay-2"></div>
@@ -61,14 +61,15 @@ const {
 
 <style>
   .welcome-flyer-section {
-    background: linear-gradient(135deg, rgba(247, 247, 247, 0.8) 0%, rgba(255, 255, 255, 0.9) 100%);
     position: relative;
+    /* Remove top positioning that was causing overlap */
+    /* top: 20px; - This was likely causing issues */
+    margin-bottom: 2rem; /* Add spacing at bottom */
   }
 
   .animated-bg-element {
     position: absolute;
     border-radius: 50%;
-    background: linear-gradient(135deg, rgba(26, 122, 100, 0.15) 0%, rgba(78, 205, 196, 0.15) 100%);
     width: 400px;
     height: 400px;
     filter: blur(80px);
@@ -76,6 +77,8 @@ const {
     animation: float 15s infinite ease-in-out;
     top: -100px;
     left: -100px;
+    /* Ensure these stay contained */
+    z-index: 1;
   }
 
   .animated-bg-element.delay-2 {
@@ -118,6 +121,8 @@ const {
     opacity: 0;
     animation: reveal-up 1s forwards ease-out;
     animation-delay: 0.2s;
+    /* Ensure container stays within its parent */
+    max-height: 600px;
   }
 
   .flyer-border {
@@ -250,15 +255,23 @@ const {
       observer.observe(el);
     });
 
-    // Add parallax effect to the flyer image
+    // Modify parallax effect to prevent going too far
     const flyerSection = document.querySelector('.welcome-flyer-section');
     if (flyerSection) {
       window.addEventListener('scroll', () => {
         const scrollPosition = window.scrollY;
         const flyerImage = document.querySelector('.flyer-image');
-        const offset = (scrollPosition - flyerSection.offsetTop) * 0.2;
-        if (flyerImage && offset > -400 && offset < 400) {
-          flyerImage.style.transform = `translateY(${offset * 0.1}px)`;
+        // Limit the offset range to prevent excessive movement
+        const sectionTop = flyerSection.getBoundingClientRect().top + window.scrollY;
+        const sectionBottom = sectionTop + flyerSection.offsetHeight;
+
+        // Only apply parallax when section is visible
+        if (scrollPosition > sectionTop - window.innerHeight &&
+            scrollPosition < sectionBottom) {
+          const offset = (scrollPosition - sectionTop) * 0.05; // Reduced multiplier
+          if (flyerImage) {
+            flyerImage.style.transform = `translateY(${offset}px)`;
+          }
         }
       });
     }
