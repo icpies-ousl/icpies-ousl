@@ -65,7 +65,7 @@ function getIconForTopic(topic: string): string {
 }
 ---
 
-<div class="py-20 bg-gradient-to-b from-white to-slate-50" id="conference-tracks">
+<div class="py-20" id="conference-tracks">
   <div class="max-w-6xl mx-auto px-4">
     <!-- Standardized title styling across components -->
     <div class="text-center mb-16">
@@ -153,11 +153,12 @@ function getIconForTopic(topic: string): string {
             </div>
           </div>
 
-          <a href={`/tracks/${track.title.toLowerCase().replace(/\s+/g, '-')}`} class="absolute inset-0 z-30" aria-label={`Learn more about ${track.title}`}></a>
+
         </div>
       ))}
     </div>
 
+    
   </div>
 </div>
 
