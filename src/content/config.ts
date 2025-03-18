@@ -33,6 +33,17 @@ const postsCollection = defineCollection({
 		}),
 });
 
+const tracksCollection = defineCollection({
+	type: 'content',
+	schema: z.object({
+	  title: z.string(),
+	  subtitle: z.string().optional(),
+	  color: z.string().optional(),
+	  icon: z.string().optional(),
+	  featured: z.boolean().default(false),
+	})
+  });
+
 const worksCollection = defineCollection({
 	schema: ({ image }) =>
 		z.object({
@@ -65,4 +76,5 @@ export const collections = {
 	pages: pagesCollection,
 	services: servicesCollection,
 	works: worksCollection,
+	tracks: tracksCollection,
 };

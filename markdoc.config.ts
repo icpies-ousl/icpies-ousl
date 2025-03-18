@@ -94,6 +94,25 @@ export default defineMarkdocConfig({
 			},
 			render: component("./src/components/sections/Services.astro"),
 		},
+		OrganizingCommittee: {
+            attributes: {
+                title: { type: String, render: "title", required: true },
+                subtitle: { type: String, render: "subtitle" },
+                description: { type: String, render: "description" },
+                members: { type: Array, render: "members", required: true },
+            },
+            render: component("./src/components/sections/OrganizingCommittee.astro"),
+        },
+		ConferenceTracksGrid: {
+            attributes: {
+                title: { type: String, render: "title", required: true },
+                subtitle: { type: String, render: "subtitle" },
+                description: { type: String, render: "description" },
+                tracks: { type: Array, render: "tracks", required: true },
+                viewAllLink: { type: String, render: "viewAllLink" },
+            },
+            render: component("./src/components/sections/ConferenceTracksGrid.astro"),
+        },
 		RecentWork: {
 			attributes: {
 				title: { type: String, render: "title", required: true },
