@@ -12,6 +12,8 @@ interface Props {
     subtitle: string;
     buttons?: ButtonProps[];
     eventDate?: string;
+    venue?: string;
+    format?: string;
 }
 
 const defaultButtons: ButtonProps[] = [
@@ -24,7 +26,21 @@ const defaultButtons: ButtonProps[] = [
 ];
 
 const defaultEventDate = "2025-08-28T09:00:00";
-const { headline = "",title, subtitle, buttons = defaultButtons, eventDate = defaultEventDate } = Astro.props;
+const {
+    headline = "",
+    title,
+    subtitle,
+    buttons = defaultButtons,
+    eventDate = defaultEventDate,
+    venue = "Colombo, Sri Lanka",
+    format = "Hybrid Conference"
+} = Astro.props;
+
+// Process headline to convert "2nd" to superscript if it exists
+const processedHeadline = headline.replace(
+    /\b2nd\b/g,
+    '<span class="superscript">2<sup>nd</sup></span>'
+);
 
 ---
 
@@ -38,6 +54,11 @@ const { headline = "",title, subtitle, buttons = defaultButtons, eventDate = def
     <div class="bg-animation-blob bg-[#1A7A64] absolute top-[20%] left-[20%] w-72 h-72 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
     <div class="bg-animation-blob bg-[#0D3B66] absolute bottom-[15%] left-[30%] w-80 h-80 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
     <div class="bg-animation-blob bg-[#FF9F1C] absolute bottom-[30%] right-[20%] w-56 h-56 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-6000"></div>
+    <!-- New subtle decorative elements -->
+    <div class="absolute top-[40%] left-[45%] w-20 h-20 rounded-full bg-white/10 backdrop-blur-sm animate-pulse-slow"></div>
+    <div class="absolute bottom-[40%] right-[35%] w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm animate-pulse-slow animation-delay-3000"></div>
+    <div class="absolute top-1/2 left-1/4 w-1 h-16 bg-gradient-to-b from-[#1A7A64]/40 to-transparent animate-float-y"></div>
+    <div class="absolute top-1/3 right-1/4 w-1 h-10 bg-gradient-to-b from-[#4ECDC4]/40 to-transparent animate-float-y animation-delay-1500"></div>
 </div>
     <Container>
         <div class="items-center flex-col w-full m-auto">
@@ -47,25 +68,47 @@ const { headline = "",title, subtitle, buttons = defaultButtons, eventDate = def
                     <h1
                         data-hero-reveal
                         class="headline text-4xl md:text-6xl lg:text-7xl leading-tight mb-2 font-extrabold text-[#2C3E50]"
+                        set:html={processedHeadline}
                     >
-                        {headline}
                     </h1>
                 }
+
+                <!-- Venue and Format Badges -->
+                <div data-hero-reveal class="flex flex-wrap justify-center gap-3 mb-4">
+                    <div class="venue-badge flex items-center bg-white/50 backdrop-blur-sm px-3 py-1 rounded-full border border-[#1A7A64]/20 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#1A7A64] mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span class="text-sm font-medium text-[#2C3E50]">{venue}</span>
+                    </div>
+                    <div class="format-badge flex items-center bg-white/50 backdrop-blur-sm px-3 py-1 rounded-full border border-[#0D3B66]/20 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#0D3B66] mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        <span class="text-sm font-medium text-[#2C3E50]">{format}</span>
+                    </div>
+                </div>
+
                 <h2
                     data-hero-reveal
-                    class="title text-2xl md:text-3xl lg:text-4xl leading-tight mt-2 mb-6 font-bold text-[#2C3E50]"
-                    set:html={title.replace(
-                        /<b>Plastics<\/b>/g,
-                        '<span class="highlighted-text plastics-highlight">Plastics</span>'
-                    ).replace(
-                        /<b>Sustainable<\/b>/g,
-                        '<span class="highlighted-text sustainable-highlight">Sustainable</span>'
-                    )}
+                    class="title text-2xl md:text-3xl lg:text-4xl leading-tight mb-6 font-bold text-[#2C3E50]"
+                    set:html={title}
                 />
                 <p
                     data-hero-reveal
                     class="text-xl md:text-2xl font-semibold mb-10 max-w-4xl mx-auto text-[#0D3B66]"
-                    set:html={subtitle}
+                    set:html={subtitle.replace(
+                        /<u>(.*?)<\/u>/g,
+                        (_, text) => {
+                            if (text === "Plastics") {
+                                return `<span class="highlighted-text plastics-highlight">${text}</span>`;
+                            } else if (text === "Sustainable Future") {
+                                return `<span class="highlighted-text sustainable-highlight">${text}</span>`;
+                            }
+                            return `<span class="highlighted-text">${text}</span>`;
+                        }
+                    )}
                 />
                 <Countdown eventDate={eventDate} />
                 <div class="mt-10 text-white flex justify-center gap-4">
@@ -91,9 +134,6 @@ const { headline = "",title, subtitle, buttons = defaultButtons, eventDate = def
                     }
                 </div>
             </div>
-            <!-- <div class="mt-12 flex justify-center">
-                <Blob class="max-w-full" />
-            </div> -->
         </div>
         <div
             class="items-center bottom-[3.13rem] justify-center left-0 absolute right-0 z-10 flex max-w-[80%] overflow-hidden m-auto text-blue-700"
@@ -140,6 +180,35 @@ const { headline = "",title, subtitle, buttons = defaultButtons, eventDate = def
         margin-bottom: 1rem;
     }
 
+    /* Style for superscript */
+    .superscript {
+        display: inline-block;
+        position: relative;
+    }
+
+    .superscript sup {
+        font-size: 0.6em;
+        top: -0.5em;
+        position: relative;
+    }
+
+    /* Venue and format badges */
+    .venue-badge, .format-badge {
+        transition: all 0.3s ease;
+    }
+
+    .venue-badge:hover {
+        background-color: rgba(255, 255, 255, 0.8);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(26, 122, 100, 0.1), 0 2px 4px -1px rgba(26, 122, 100, 0.06);
+    }
+
+    .format-badge:hover {
+        background-color: rgba(255, 255, 255, 0.8);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(13, 59, 102, 0.1), 0 2px 4px -1px rgba(13, 59, 102, 0.06);
+    }
+
     /* Style for the title text */
     .title {
         font-weight: 700;
@@ -178,6 +247,40 @@ const { headline = "",title, subtitle, buttons = defaultButtons, eventDate = def
         -webkit-box-decoration-break: clone;
     }
 
+    @keyframes pulse-slow {
+        0%, 100% {
+            opacity: 0.4;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 0.7;
+            transform: scale(1.1);
+        }
+    }
+
+    .animate-pulse-slow {
+        animation: pulse-slow 6s infinite ease-in-out;
+    }
+
+    @keyframes float-y {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-15px);
+        }
+    }
+
+    .animate-float-y {
+        animation: float-y 4s infinite ease-in-out;
+    }
+    .animation-delay-1500 {
+        animation-delay: 1.5s;
+    }
+
+    .animation-delay-3000 {
+        animation-delay: 3s;
+    }
     .sustainable-highlight:hover {
         color: #1A7A64;
         background: linear-gradient(to bottom, rgba(26, 122, 100, 0.15) 50%, rgba(26, 122, 100, 0.3) 50%);
@@ -280,6 +383,17 @@ const { headline = "",title, subtitle, buttons = defaultButtons, eventDate = def
                 duration: 1.2,
                 opacity: 1,
                 stagger: 0.15
+            });
+
+            // Special animation for venue and format badges
+            gsap.from(".venue-badge, .format-badge", {
+                scale: 0.8,
+                y: -10,
+                opacity: 0,
+                delay: 0.5,
+                duration: 0.6,
+                stagger: 0.15,
+                ease: "back.out(1.7)"
             });
 
             // Add additional animation for highlighted text
