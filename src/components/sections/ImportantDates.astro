@@ -59,12 +59,8 @@ const formatDateWithSuffix = (dateStr: string) => {
 <div class="py-20 bg-[#F7F7F7] rounded-xl border-l-4 border-[#1A7A64] shadow-md" id="important-dates">
     <div class="max-w-5xl mx-auto px-4">
         <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold text-[#2C3E50] mb-4">
-                <span class="relative inline-block">
-                    {title}
-                    <span class="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-[#1A7A64]/20 to-[#4ECDC4]/30 rounded-full transform translate-y-2"></span>
-                </span>
-            </h2>
+			<h2 class="text-[2.13rem] leading-9 font-semibold mb-6 text-[#2C3E50]">{title}</h2>
+            <div class="w-32 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-6"></div>
             {subtitle &&
                 <p class="text-xl text-[#2C3E50]/80 mt-6 max-w-3xl mx-auto">
                     {subtitle}

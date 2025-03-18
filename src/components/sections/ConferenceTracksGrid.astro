@@ -65,24 +65,30 @@ function getIconForTopic(topic: string): string {
 }
 ---
 
-<section class="py-16 bg-gradient-to-b from-white to-slate-50">
-  <div class="container mx-auto px-4">
-    <!-- Enhanced title section that matches the Services component style -->
+<div class="py-20 shadow-md" id="conference-tracks">
+  <div class="max-w-6xl mx-auto px-4">
+    <!-- Standardized title styling across components -->
     <div class="text-center mb-16">
-      <h2 class="text-[2.13rem] leading-9 font-semibold mb-6 text-[#2C3E50]">{title}</h2>
+      <h2 class="text-[2.13rem] leading-9 font-semibold mb-6 text-[#2C3E50]">
+        {title}
+      </h2>
 
-      <!-- Decorative divider line with gradient -->
-      <div class="w-24 h-1 bg-[#1A7A64] rounded-full mx-auto mb-6 opacity-60"></div>
+      <!-- Using the standardized gradient divider -->
+      <div class="w-32 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-6"></div>
 
       {subtitle &&
-        <p class="text-xl text-[#2C3E50]/80 mb-4 font-medium">{subtitle}</p>
+        <p class="text-xl text-[#2C3E50]/80 mb-4 font-medium">
+          {subtitle}
+        </p>
       }
 
       {description &&
-        <p class="max-w-3xl mx-auto text-[#2C3E50]/70 leading-relaxed">{description}</p>
+        <p class="max-w-3xl mx-auto text-[#2C3E50]/70 leading-relaxed">
+          {description}
+        </p>
       }
 
-      <!-- Decorative elements -->
+      <!-- Decorative elements for consistency -->
       <div class="relative mt-8 mb-12">
         <div class="absolute left-1/2 -translate-x-1/2 top-0 w-16 h-8">
           <div class="absolute left-0 top-0 w-2 h-2 rounded-full bg-[#1A7A64]/60"></div>
@@ -147,28 +153,16 @@ function getIconForTopic(topic: string): string {
             </div>
           </div>
 
-          {/* <a href={`/tracks/${track.title.toLowerCase().replace(/\s+/g, '-')}`} class="absolute inset-0 z-30" aria-label={`Learn more about ${track.title}`}></a> */}
+          <a href={`/tracks/${track.title.toLowerCase().replace(/\s+/g, '-')}`} class="absolute inset-0 z-30" aria-label={`Learn more about ${track.title}`}></a>
         </div>
       ))}
     </div>
 
-    <!-- {viewAllLink && (
-      <div class="text-center mt-12">
-        <a
-          href={viewAllLink}
-          class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] text-white font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-[#1A7A64]/30 transform hover:-translate-y-1"
-        >
-          View All Tracks
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-          </svg>
-        </a>
-      </div>
-    )} -->
   </div>
-</section>
+</div>
 
 <style>
+  /* Styles remain the same */
   .track-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }

@@ -67,7 +67,6 @@ const { headline = "",title, subtitle, buttons = defaultButtons, eventDate = def
                     class="text-xl md:text-2xl font-semibold mb-10 max-w-4xl mx-auto text-[#0D3B66]"
                     set:html={subtitle}
                 />
-
                 <Countdown eventDate={eventDate} />
                 <div class="mt-10 text-white flex justify-center gap-4">
                     {
@@ -75,7 +74,7 @@ const { headline = "",title, subtitle, buttons = defaultButtons, eventDate = def
                             <Link
                                 data-hero-reveal
                                 href={href}
-                                class="register-button bg-[#1A7A64] hover:bg-[#0D3B66] text-white font-medium py-3 px-6 rounded-md transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg hover:transform hover:translate-y-[-2px]"
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] text-white font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-[#1A7A64]/30 transform hover:-translate-y-1"
 
                                 style={
                                     style as
