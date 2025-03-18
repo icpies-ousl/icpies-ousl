@@ -9,15 +9,15 @@
 		},
 		{
 			"title": "About",
-			"link": "/about"
+			"link": "#about"
 		},
 		{
-			"title": "Works",
-			"link": "/works"
+			"title": "Conference Tracks",
+			"link": "#conference-tracks"
 		},
 		{
-			"title": "News",
-			"link": "/news"
+			"title": "Committees",
+			"link": "#committees"
 		},
 		{
 			"title": "Contacts",
