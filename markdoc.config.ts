@@ -25,6 +25,15 @@ export default defineMarkdocConfig({
 		},
 	},
 	tags: {
+		WelcomeFlyer: {
+		  attributes: {
+			title: { type: String, render: "title" },
+			subtitle: { type: String, render: "subtitle" },
+			ctaText: { type: String, render: "ctaText" },
+			ctaLink: { type: String, render: "ctaLink" },
+		  },
+		  render: component("./src/components/sections/WelcomeFlyer.astro"),
+		},
 		Container: {
 			attributes: {
 				class: { type: String, render: "class" },
@@ -102,7 +111,21 @@ export default defineMarkdocConfig({
                 members: { type: Array, render: "members", required: true },
             },
             render: component("./src/components/sections/OrganizingCommittee.astro"),
-        },
+		},
+				// Add this to your tags object:
+
+		ContactUs: {
+			attributes: {
+				title: { type: String, render: "title", required: true },
+				subtitle: { type: String, render: "subtitle" },
+				description: { type: String, render: "description" },
+				generalEmail: { type: String, render: "generalEmail" },
+				address: { type: String, render: "address" },
+				contactPersons: { type: Array, render: "contactPersons" },
+				socialMedia: { type: Object, render: "socialMedia" }
+			},
+			render: component("./src/components/sections/ContactUs.astro"),
+		},
 		ConferenceTracksGrid: {
             attributes: {
                 title: { type: String, render: "title", required: true },

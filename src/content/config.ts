@@ -71,10 +71,25 @@ const servicesCollection = defineCollection({
 		}),
 });
 
+const submissions = defineCollection({
+	schema: z.object({
+	  title: z.string(),
+	  type: z.enum(['informational']),
+	  lastUpdateDate: z.string().transform(str => new Date(str)),
+	  seo: z.object({
+		title: z.string(),
+		description: z.string(),
+		author: z.string(),
+	  }),
+	}),
+  });
+
 export const collections = {
 	posts: postsCollection,
 	pages: pagesCollection,
 	services: servicesCollection,
 	works: worksCollection,
 	tracks: tracksCollection,
+	'submissions': submissions,
+
 };

@@ -1,0 +1,90 @@
+---
+interface Template {
+    title: string;
+    description: string;
+    format: string;
+    icon: string;
+    url: string;
+}
+
+interface Props {
+    title?: string;
+    subtitle?: string;
+    templates: Template[];
+}
+
+const {
+    title = "Download Templates",
+    subtitle = "Use these templates for your ICPIES 2025 submissions",
+    templates = []
+} = Astro.props;
+
+const formatIcons = {
+    word: `<svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-blue-600" viewBox="0 0 48 48"><path fill="#2197f3" d="M37,45H11c-1.657,0-3-1.343-3-3V6c0-1.657,1.343-3,3-3h19l10,10v29C40,43.657,38.657,45,37,45z"/><path fill="#fff" d="M40 13L30 13 30 3z"/><path fill="#fff" d="M30 22L16 22 16 21 16 20 30 20 30 21z"/><path fill="#fff" d="M33 26L16 26 16 25 16 24 33 24 33 25z"/><path fill="#fff" d="M30 30L16 30 16 29 16 28 30 28 30 29z"/></svg>`,
+    latex: `<svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-800" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 12a2.5 2.5 0 0 1 -2.5 -2.5c0 -1.38 1.4 -2.5 3 -2.5c.757 0 1.455 .19 2 .5" /><path d="M6 12h5" /><path d="M10.5 17l-4.5 -9" /><path d="M19 17c-.333 -1.333 -1 -2 -2 -2h-1c-.333 0 -.5 -.167 -.5 -.5c0 -.333 .167 -.5 .5 -.5h1c1 0 1.667 -.667 2 -2" /></svg>`,
+    pdf: `<svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-red-600" viewBox="0 0 48 48"><path fill="#e53935" d="M37,45H11c-1.657,0-3-1.343-3-3V6c0-1.657,1.343-3,3-3h19l10,10v29C40,43.657,38.657,45,37,45z"/><path fill="#fff" d="M40 13L30 13 30 3z"/><path fill="#ffcdd2" d="M30 13L40 13 30 3z"/><path fill="#fff" d="M15.512,24.428l-1.411-4.777h-2.852v8.86h1.916v-4.786l1.52,4.786h1.651l1.567-4.698v4.698h1.916v-8.86h-2.897L15.512,24.428z"/><path fill="#fff" d="M23.531 22.104H25.271V28.517000000000003H23.531z"/><path fill="#fff" d="M25.271 19.652H23.531V21.391H25.271V19.652z"/><path fill="#fff" d="M30.533,22.104v-2.453h-2.25h-2.25v8.86h2.25v-2.866h1.934v-2.166h-1.934v-1.376H30.533z"/></svg>`
+};
+
+// Function to get icon for file format
+function getFormatIcon(format: string): string {
+    const formatLower = format.toLowerCase();
+    if (formatLower.includes('word') || formatLower.includes('docx') || formatLower.includes('doc')) {
+        return formatIcons.word;
+    } else if (formatLower.includes('latex') || formatLower.includes('tex')) {
+        return formatIcons.latex;
+    } else if (formatLower.includes('pdf')) {
+        return formatIcons.pdf;
+    } else {
+        return '📄';
+    }
+}
+---
+
+<section class="py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-[#2C3E50]">{title}</h2>
+            <div class="w-24 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto my-4"></div>
+            <p class="max-w-3xl mx-auto text-gray-600 leading-relaxed">{subtitle}</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {templates.map((template) => (
+                <div class="template-card bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+                    <div class="p-6">
+                        <!-- Format icon -->
+                        <div class="mb-4 flex justify-center">
+                            <span class="rounded-full bg-gray-100 p-3" set:html={getFormatIcon(template.icon)} />
+                        </div>
+
+                        <!-- Template details -->
+                        <h3 class="text-xl font-semibold text-[#2C3E50] text-center mb-2">{template.title}</h3>
+                        <p class="text-gray-600 text-center mb-4 text-sm">{template.format}</p>
+                        <p class="text-gray-600 text-center mb-6">{template.description}</p>
+
+                        <!-- Download button -->
+                        <div class="flex justify-center">
+                            <a
+                                href={template.url}
+                                download
+                                class="inline-flex items-center justify-center px-5 py-2.5 bg-[#1A7A64] hover:bg-[#156954] text-white rounded-md transition-colors"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                Download
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    </div>
+</section>
+
+<style>
+    .template-card {
+        display: flex;
+        flex-direction: column;
+    }
+</style>

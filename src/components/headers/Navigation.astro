@@ -4,344 +4,290 @@ import { getLocalizedSettings } from "@/lib/localization-helpers";
 import { translatePath, unlocalizedUrl } from "@/lib/localization-helpers";
 import { defaultLocale, locales } from "site";
 import Logo from "/src/assets/pages/homepage/icpies_logo.png";
+
 const currentLocale = Astro.currentLocale;
 
 function getTranslatedUrl(locale: string): string {
-	const unlocalizedPath = unlocalizedUrl(Astro.url.pathname);
-	return translatePath(locale, unlocalizedPath);
+    const unlocalizedPath = unlocalizedUrl(Astro.url.pathname);
+    return translatePath(locale, unlocalizedPath);
 }
 
 function isActiveLocale(locale: string): boolean {
-	return locale === currentLocale;
+    return locale === currentLocale;
 }
 
 const { header, contacts } = getLocalizedSettings(currentLocale);
 
-const logoPath = header.logo?.imagePath;
+// Define the navigation items
+const navItems = [
+  { title: "Home", link: "/" },
+  { title: "About ICPIES", link: "/about" },
+  { title: "Important Dates", link: "/important-dates" },
+  { title: "Conference Tracks", link: "/conference-tracks" },
+  { title: "Submissions", link: "/submissions" },
+  { title: "Contact Us", link: "/contact" },
+  { title: "Keynotes", link: "/keynotes" },
+  { title: "Committee", link: "/committee" }
+];
 
-const images = import.meta.glob<{ default: ImageMetadata }>(
-	"/src/assets/global/**/*.{webp,jpeg,jpg,png,gif,svg}",
-);
-
-
+// Determine current page for active state
+const currentPath = Astro.url.pathname;
 ---
 
-<style>
-	.menu-icon {
-		position: relative;
-		width: 50px;
-		height: 50px;
-		cursor: pointer;
-	}
-	.menu-icon .menu-icon__checkbox {
-		display: block;
-		width: 100%;
-		height: 100%;
-		position: relative;
-		cursor: pointer;
-		z-index: 2;
-		-webkit-touch-callout: none;
-		position: absolute;
-		opacity: 0;
-	}
-	.menu-icon div {
-		margin: auto;
-		position: absolute;
-		top: 0;
-		right: 0;
-		left: 0;
-		bottom: 0;
-		width: 22px;
-		height: 12px;
-	}
-	.menu-icon span {
-		position: absolute;
-		display: block;
-		width: 100%;
-		height: 2px;
-		background-color: var(--bar-bg, #000);
-		border-radius: 5rem;
-		transition: all 0.2s cubic-bezier(0.1, 0.82, 0.76, 0.965);
-	}
-	.menu-icon span:first-of-type {
-		top: 0;
-	}
-	.menu-icon span:last-of-type {
-		bottom: 0;
-	}
-	.menu-icon.active span:first-of-type,
-	.menu-icon .menu-icon__checkbox:checked + div span:first-of-type {
-		transform: rotate(45deg);
-		top: 5px;
-	}
-	.menu-icon.active span:last-of-type,
-	.menu-icon .menu-icon__checkbox:checked + div span:last-of-type {
-		transform: rotate(-45deg);
-		bottom: 5px;
-	}
-	.menu-icon.active:hover span:first-of-type,
-	.menu-icon.active:hover span:last-of-type,
-	.menu-icon:hover .menu-icon__checkbox:checked + div span:first-of-type,
-	.menu-icon:hover .menu-icon__checkbox:checked + div span:last-of-type {
-		width: 22px;
-	}
-	@media (min-width: 1024px) {
-		.menu-icon:hover span:first-of-type {
-			width: 26px;
-		}
-		.menu-icon:hover span:last-of-type {
-			width: 12px;
-		}
-	}
-	#navigation {
-		pointer-events: none;
-	}
-	[data-nav-border-reveal] {
-		--tw-border-opacity: 0;
-	}
-	.active-locale {
-		font-weight: bolder;
-	}
-</style>
+<header class="fixed w-full z-30 bg-white/95 backdrop-blur-sm shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Top navigation bar with logo and menu -->
+    <div class="flex items-center justify-between h-20">
+      <!-- Logo -->
+      <div class="flex-shrink-0">
+        <a href={translatePath(currentLocale ?? defaultLocale, "/")} class="flex items-center">
+          <Image
+            src={Logo}
+            alt="ICPIES 2025 Logo"
+            class="h-14 w-auto"
+            width={160}
+            height={160}
+          />
+          <!-- <div class="ml-3 hidden sm:block">
+            <h1 class="text-xl font-semibold text-[#2C3E50]">ICPIES 2025</h1>
+            <p class="text-xs text-[#2C3E50]/70">International Conference on Plastics, Innovation, and Environmental Sustainability</p>
+          </div> -->
+        </a>
+      </div>
 
-<style is:global>
-	[data-nav-text-reveal] {
-		opacity: 0;
-	}
-	[data-nav-text-reveal] > div {
-		position: relative;
-		margin: 0;
-	}
-	.split-parent {
-		overflow: hidden;
-	}
-	.split-child {
-		display: inline-block;
-	}
-</style>
+      <!-- Desktop Navigation -->
+      <nav class="hidden lg:flex items-center space-x-1">
+        {navItems.map((item) => {
+          const isActive = currentPath === item.link ||
+                         (item.link !== '/' && currentPath.startsWith(item.link));
+          return (
+            <a
+              href={translatePath(currentLocale ?? defaultLocale, item.link)}
+              class:list={[
+                "px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300",
+                isActive
+                  ? "text-[#1A7A64] border-b-2 border-[#1A7A64]"
+                  : "text-gray-700 hover:text-[#1A7A64] hover:bg-gray-50"
+              ]}
+              aria-current={isActive ? "page" : undefined}
+            >
+              {item.title}
+            </a>
+          );
+        })}
 
-<header class="fixed w-full z-30">
-	<div
-		class="items-center auto-cols-fr grid-cols-2 lg:grid-cols-2 grid-rows-[auto] justify-between left-0 py-3.5 px-6 lg:px-20 right-0 top-0 grid gap-4"
-	>
-		<div
-			class="items-center flex-wrap justify-start relative flex text-blue-700 z-20"
-		>
-			<a
-				href={translatePath(currentLocale ?? defaultLocale, "/")}
-				id="header-logo"
-				class="text-blue-700 justify-self-start lg:justify-self-center underline inline-block max-w-full"
-			>
-			<Image
-			src={Logo}
-			alt="ICPIES 2025 Logo"
-			class="relative z-10 w-40 h-40 object-contain"
-			width="160"
-			height="160"
-		/>
-			</a>
-		</div>
-		<div
-			class="col-start-2 hidden lg:flex justify-center items-center h-full"
-		>
-			<a
-				data-company-name
-				class="pb-4 group"
-				href={translatePath(currentLocale ?? defaultLocale, "/")}
-			>
-				<div
-					class="w-20 h-1 bg-slate-200 rounded-full group-hover:bg-slate-600 transition-colors duration-500"
-				>
-				</div>
-			</a>
-		</div>
-		<div class="justify-self-end col-span-1 row-span-1 z-40 col-start-3">
-			<div
-				class="items-center justify-center relative flex h-16 lg:w-24 lg:h-24"
-			>
-				<div class="menu-icon">
-					<input
-						id="menu-toggle"
-						class="menu-icon__checkbox"
-						type="checkbox"
-					/>
-					<div>
-						<span></span>
-						<span></span>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<nav
-		id="navigation"
-		class="items-center bottom-0 text-sm font-medium justify-center left-0 fixed right-0 top-0 flex h-screen z-30"
-	>
-		<div
-			id="navigation-background"
-			class="bg-white w-full h-full absolute top-0 left-0 opacity-0"
-		>
-		</div>
-		<div
-			class="items-center font-semibold flex-wrap justify-center flex flex-col overflow-hidden z-20 w-full"
-		>
-			<div class="flex flex-col items-start md:items-center pt-10">
-				{
-					header.pages.map((page, index) => (
-						<a
-							data-nav-item
-							href={translatePath(
-								currentLocale ?? defaultLocale,
-								page.link,
-							)}
-							class="items-center justify-start flex overflow-hidden gap-4 relative pr-10"
-						>
-							<div
-								data-nav-border-reveal
-								data-nav-text-reveal
-								class="text-black items-center cursor-pointer justify-center pt-1 flex w-9 h-9 border-2 border-black border-solid rounded-full"
-							>
-								0{index + 1}
-							</div>
-							<div
-								data-nav-text-reveal
-								class="cursor-pointer overflow-hidden text-4xl xs:text-5xl md:text-[5.63rem] !leading-[1.15] text-black"
-							>
-								{page.title}
-							</div>
-						</a>
-					))
-				}
-				<div class="flex gap-8 pt-10 pl-16 md:pl-0">
-					{
-						locales.map((locale) => (
-							<a
-								href={getTranslatedUrl(locale)}
-								class:list={[
-									"items-center justify-start flex overflow-hidden gap-4 relative cursor-pointer",
-									isActiveLocale(locale) && "active-locale",
-								]}
-							>
-								<span
-									data-nav-text-reveal
-									class="overflow-hidden text-md xs:text-lg md:text-xl !leading-[1.15] text-black"
-								>
-									<span>{locale}</span>
-								</span>
-							</a>
-						))
-					}
-				</div>
-			</div>
-		</div>
-	</nav>
+        <!-- Language switcher for desktop -->
+        <div class="relative ml-4">
+          <button
+            type="button"
+            class="flex items-center text-sm font-medium text-gray-700 hover:text-[#1A7A64] focus:outline-none"
+            id="language-menu-button"
+            aria-expanded="false"
+            aria-haspopup="true"
+          >
+            <span>{currentLocale?.toUpperCase()}</span>
+            <svg class="ml-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </button>
+
+          <!-- Language dropdown menu -->
+          <div
+            class="hidden absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+            id="language-menu"
+            role="menu"
+            aria-orientation="vertical"
+            aria-labelledby="language-menu-button"
+            tabindex="-1"
+          >
+            {
+              locales.map((locale) => (
+                <a
+                  href={getTranslatedUrl(locale)}
+                  class:list={[
+                    "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100",
+                    isActiveLocale(locale) && "font-bold text-[#1A7A64] bg-gray-50"
+                  ]}
+                  role="menuitem"
+                  tabindex="-1"
+                >
+                  {locale.toUpperCase()}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </nav>
+
+      <!-- Mobile menu button -->
+      <div class="flex lg:hidden">
+        <button
+          type="button"
+          id="mobile-menu-button"
+          class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-[#1A7A64] hover:bg-gray-100 focus:outline-none"
+          aria-controls="mobile-menu"
+          aria-expanded="false"
+        >
+          <span class="sr-only">Open main menu</span>
+          <!-- Menu open icon -->
+          <svg id="menu-open-icon" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <!-- Menu close icon -->
+          <svg id="menu-close-icon" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile menu, show/hide based on menu state -->
+  <div class="lg:hidden hidden transition-all duration-300 ease-in-out" id="mobile-menu">
+    <div class="px-2 pt-2 pb-3 space-y-1 bg-white border-t shadow-lg">
+      {navItems.map((item) => {
+        const isActive = currentPath === item.link ||
+                       (item.link !== '/' && currentPath.startsWith(item.link));
+        return (
+          <a
+            href={translatePath(currentLocale ?? defaultLocale, item.link)}
+            class:list={[
+              "block px-3 py-2 rounded-md text-base font-medium",
+              isActive
+                ? "text-white bg-[#1A7A64]"
+                : "text-gray-700 hover:bg-gray-50 hover:text-[#1A7A64]"
+            ]}
+            aria-current={isActive ? "page" : undefined}
+          >
+            {item.title}
+          </a>
+        );
+      })}
+
+      <!-- Language switcher for mobile -->
+      <div class="pt-4 pb-3 border-t border-gray-200">
+        <div class="px-3">
+          <p class="text-sm font-medium text-gray-500">Language</p>
+        </div>
+        <div class="mt-2 space-y-1">
+          {
+            locales.map((locale) => (
+              <a
+                href={getTranslatedUrl(locale)}
+                class:list={[
+                  "block px-3 py-2 rounded-md text-base font-medium",
+                  isActiveLocale(locale)
+                    ? "bg-gray-50 text-[#1A7A64]"
+                    : "text-gray-700 hover:bg-gray-50 hover:text-[#1A7A64]"
+                ]}
+              >
+                {locale.toUpperCase()}
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
 </header>
 
 <script>
-	import { gsap } from "gsap";
-	import { ScrollTrigger } from "gsap/ScrollTrigger";
-	// Uncomment if you have premium version of gsap
-	// import { SplitText } from "gsap/SplitText";
-	// import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
-	import { BlurPlugin } from "@/utils/gsap-blur";
-	import { LifecycleManager } from "@/utils/lifecycle-manager";
+  // Handle mobile menu toggle
+  document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuOpenIcon = document.getElementById('menu-open-icon');
+    const menuCloseIcon = document.getElementById('menu-close-icon');
 
-	gsap.registerPlugin(
-		ScrollTrigger,
-		/*SplitText, DrawSVGPlugin,*/
-		BlurPlugin,
-	);
+    mobileMenuButton?.addEventListener('click', () => {
+      // Toggle menu visibility
+      mobileMenu?.classList.toggle('hidden');
 
-	const lm = new LifecycleManager();
+      // Toggle between menu icons
+      menuOpenIcon?.classList.toggle('hidden');
+      menuCloseIcon?.classList.toggle('hidden');
+    });
+  });
 
-	lm.onElementLoaded("navigation", (ctx) => {
-		ctx?.add(() => {
-			gsap.timeline({
-				defaults: {
-					ease: "power1.inOut",
-					stagger: 0.2,
-				},
-				scrollTrigger: {
-					trigger: "body",
-					start: "50px",
-					toggleActions: "play none none reverse",
-				},
-			})
-				.to("[data-company-name]", { opacity: 0 })
-				// .to("header .logo-path-mask", { drawSVG: 0 }, "<")
-				.to("header .logo-path-mask", { opacity: 0 }, "<")
-				.set("#header-logo", { pointerEvents: "none" });
+  // Handle language menu toggle
+  document.addEventListener('DOMContentLoaded', () => {
+    const languageMenuButton = document.getElementById('language-menu-button');
+    const languageMenu = document.getElementById('language-menu');
 
-			const tl = gsap.timeline({
-				paused: true,
-				defaults: {
-					duration: 1,
-					ease: "power3.out",
-				},
-			});
+    languageMenuButton?.addEventListener('click', () => {
+      languageMenu?.classList.toggle('hidden');
+    });
 
-			// const childSplit = new SplitText("[data-nav-text-reveal]", {
-			// 	type: "lines",
-			// 	linesClass: "split-child",
-			// });
-			// const parentSplit = new SplitText("[data-nav-text-reveal]", {
-			// 	// type: "lines",
-			// 	linesClass: "split-parent",
-			// });
+    // Close menu when clicking outside
+    document.addEventListener('click', (event) => {
+      if (!languageMenuButton?.contains(event.target as Node) &&
+          !languageMenu?.contains(event.target as Node)) {
+        languageMenu?.classList.add('hidden');
+      }
+    });
+  });
 
-			tl.set("#navigation", { pointerEvents: "auto" })
-				.to("#navigation-background", { opacity: 1 }, "<")
-				.to(
-					"[data-nav-text-reveal]",
-					{ opacity: 1, duration: 0.5, ease: "none" },
-					"<=0.5",
-				);
-			// .from(
-			// 	childSplit.lines,
-			// 	{
-			// 		duration: 1,
-			// 		yPercent: 300,
-			// 		skewY: 7,
-			// 		stagger: 0.02,
-			// 	},
-			// 	"<",
-			// );
+  // Close mobile menu on window resize
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 1024) {
+      const mobileMenu = document.getElementById('mobile-menu');
+      const menuOpenIcon = document.getElementById('menu-open-icon');
+      const menuCloseIcon = document.getElementById('menu-close-icon');
 
-			const menuItems = gsap.utils.toArray(
-				"[data-nav-item]",
-			) as HTMLElement[];
+      mobileMenu?.classList.add('hidden');
+      menuOpenIcon?.classList.remove('hidden');
+      menuCloseIcon?.classList.add('hidden');
+    }
+  });
 
-			menuItems.forEach((menuItem) => {
-				const menuItemTl = gsap
-					.timeline({
-						defaults: { duration: 0.4, ease: "none" },
-						paused: true,
-					})
-					.to(menuItem, {
-						blur: 2,
-					})
-					.to(menuItem, {
-						blur: 1,
-					});
-				menuItem.addEventListener("mouseenter", (e) =>
-					menuItemTl.play(),
-				);
-				menuItem.addEventListener("mouseleave", (e) =>
-					menuItemTl.pause(0),
-				);
-			});
-
-			// Get the checkbox
-			const menuToggle = document.getElementById("menu-toggle");
-
-			// Add an event listener to the checkbox
-			menuToggle?.addEventListener("change", function () {
-				if ((this as HTMLInputElement).checked) {
-					tl.play();
-				} else {
-					tl.reverse();
-				}
-			});
-		});
-	});
+  // Handle scroll behavior
+  window.addEventListener('scroll', () => {
+    const header = document.querySelector('header');
+    if (window.scrollY > 20) {
+      header?.classList.add('shadow');
+    } else {
+      header?.classList.remove('shadow');
+    }
+  });
 </script>
+
+<style>
+  /* Smooth transition for navigation highlights */
+  header a {
+    transition: all 0.2s ease-in-out;
+  }
+
+  /* Add space below header to prevent content from being hidden */
+  header + * {
+    padding-top: 5rem;
+  }
+
+  /* Shadow transition for header on scroll */
+  header {
+    transition: box-shadow 0.3s ease;
+  }
+
+  header.shadow {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Active menu link effect */
+  nav a[aria-current="page"] {
+    position: relative;
+  }
+
+  /* Mobile menu animation */
+  #mobile-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+  }
+
+  #mobile-menu.hidden {
+    max-height: 0;
+  }
+
+  #mobile-menu:not(.hidden) {
+    max-height: 600px;
+  }
+</style>

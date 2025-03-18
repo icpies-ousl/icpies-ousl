@@ -33,7 +33,7 @@ const images = import.meta.glob<{ default: ImageMetadata }>(
 );
 ---
 
-<div class="pt-36" id="services">
+<div class="pt-36" id="about">
     {aboutTitle && (
         <div class="mb-16 p-8 bg-[#F7F7F7] rounded-xl border-l-4 border-[#1A7A64] shadow-md">
            	{aboutLogo && (
@@ -88,7 +88,7 @@ const images = import.meta.glob<{ default: ImageMetadata }>(
 					<div class="flex justify-center mt-8">
             <div class="indexed-journal-badge bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] text-white text-xs md:text-sm font-bold px-4 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 whitespace-nowrap">
                 <span class="inline-block w-2 h-2 bg-white rounded-full animate-ping-slow opacity-75"></span>
-				Selected Papers in Scopus-Indexed Journal
+				Selected Papers will be published on Journal
             </div>
         </div>
 
@@ -100,12 +100,12 @@ const images = import.meta.glob<{ default: ImageMetadata }>(
 
     <!-- Rest of the component remains the same -->
     <div class="mb-12">
-        <h2
+        <!-- <h2
             class="text-[2.13rem] leading-9 font-semibold mb-6 text-center mx-auto"
             set:html={title}
-        />
+        /> -->
 
-        <!-- Organizers Logos Section -->
+        <!-- Organizers Logos Section
         <div class="flex flex-col md:flex-row justify-center items-center gap-8 mt-8 px-4">
             <div class="organizer-card">
                 <div class="relative flex flex-col items-center p-6 bg-white rounded-xl shadow-md border border-[#FF9F1C]/20 transform transition-all duration-300 hover:scale-105 hover:shadow-lg group">
@@ -160,7 +160,7 @@ const images = import.meta.glob<{ default: ImageMetadata }>(
                     <div class="w-16 h-1 bg-[#1A7A64]/30 rounded-full mt-2 mb-3 group-hover:bg-[#1A7A64]/50 transition-colors duration-300"></div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 
     <!-- Services section remains the same -->

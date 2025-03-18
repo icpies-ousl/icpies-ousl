@@ -1,0 +1,117 @@
+---
+interface Tab {
+    id: string;
+    title: string;
+    content: string;
+}
+
+interface Props {
+    title?: string;
+    subtitle?: string;
+    tabs: Tab[];
+}
+
+const { title = "Author Guidelines", subtitle = "Guidelines for submitting your research to ICPIES 2025", tabs = [] } = Astro.props;
+---
+
+<section class="py-16 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-[#2C3E50]">{title}</h2>
+            <div class="w-24 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto my-4"></div>
+            <p class="max-w-3xl mx-auto text-gray-600 leading-relaxed">{subtitle}</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <!-- Tab Navigation -->
+            <div class="flex flex-wrap border-b border-gray-200">
+                {tabs.map((tab, index) => (
+                    <button
+                        class="tab-button py-4 px-6 font-medium text-gray-600 hover:text-[#1A7A64] hover:bg-gray-50 transition-colors"
+                        data-tab={tab.id}
+                        aria-selected={index === 0 ? "true" : "false"}
+                    >
+                        {tab.title}
+                    </button>
+                ))}
+            </div>
+
+            <!-- Tab Content -->
+            <div class="p-6 md:p-8">
+                {tabs.map((tab, index) => (
+                    <div
+                        id={`tab-content-${tab.id}`}
+                        class={`tab-content prose max-w-none ${index === 0 ? 'block' : 'hidden'}`}
+                    >
+                        <div class="prose-headings:text-[#2C3E50] prose-a:text-[#1A7A64] prose-a:font-semibold prose-a:no-underline hover:prose-a:underline">
+                            <Fragment set:html={tab.content} />
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabButtons = document.querySelectorAll('.tab-button');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.add('hidden');
+                });
+
+                // Show selected tab content
+                document.getElementById(`tab-content-${tabId}`).classList.remove('hidden');
+
+                // Update active tab styling
+                tabButtons.forEach(btn => {
+                    btn.setAttribute('aria-selected', 'false');
+                    btn.classList.remove('border-b-2', 'border-[#1A7A64]', 'text-[#1A7A64]');
+                });
+
+                button.setAttribute('aria-selected', 'true');
+                button.classList.add('border-b-2', 'border-[#1A7A64]', 'text-[#1A7A64]');
+            });
+        });
+
+        // Set first tab as active by default
+        if (tabButtons.length > 0) {
+            tabButtons[0].classList.add('border-b-2', 'border-[#1A7A64]', 'text-[#1A7A64]');
+        }
+    });
+</script>
+
+<style>
+    .tab-button[aria-selected="true"] {
+        border-bottom: 2px solid #1A7A64;
+        color: #1A7A64;
+    }
+
+    .prose h2 {
+        color: #2C3E50;
+        font-weight: 600;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .prose h3 {
+        color: #2C3E50;
+        font-weight: 500;
+    }
+
+    .prose ul {
+        list-style-type: disc;
+        padding-left: 1.5rem;
+    }
+
+    .prose ol {
+        list-style-type: decimal;
+        padding-left: 1.5rem;
+    }
+</style>

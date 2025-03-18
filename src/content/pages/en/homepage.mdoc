@@ -60,67 +60,43 @@ seo:
     viewAllLink="/tracks"
     tracks=[
         {
-            title: "Plastic Pollution and Health Impacts",
-            subtitle: "Microplastics in Ecosystems",
+            title: "Plastic Pollution and Health Impacts: Microplastics in Ecosystems",
             image: "./tracks/track-pollution.png",
-            description: "Research on microplastics in ecosystems and their effects on environmental and human health",
-            topics: ["Microplastic Detection", "Health Assessment", "Marine Pollution", "Toxicology"],
             color: "#1A7A64"
         },
         {
-            title: "Circular Economy Approaches",
-            subtitle: "Plastic Waste Management",
+            title: "Circular Economy Approaches to Plastic Waste Management",
             image: "./tracks/track-circular.png",
-            description: "Innovative approaches to plastic waste management and resource recovery systems",
-            topics: ["Recycling Technologies", "Waste Reduction", "Circular Business Models", "Resource Recovery"],
             color: "#2E5EAA"
         },
         {
-            title: "Alternatives for Plastics",
-            subtitle: "Challenges and Opportunities",
+            title: "Alternatives for Plastics: Challenges and Opportunities",
             image: "./tracks/track-alternatives.png",
-            description: "Development of sustainable alternatives to conventional plastics and implementation strategies",
-            topics: ["Biodegradable Materials", "Bioplastics", "Material Innovation", "Scalability"],
             color: "#9B4D85"
         },
         {
-            title: "Policy & Regulatory Frameworks",
-            subtitle: "Waste Management",
+            title: "Policy and Regulatory Frameworks for Waste Management",
             image: "./tracks/track-policy.png",
-            description: "Development and implementation of effective policies for sustainable waste management",
-            topics: ["Policy Development", "Regulatory Compliance", "Global Standards", "Legal Frameworks"],
             color: "#D66853"
         },
         {
-            title: "Technological Innovations",
-            subtitle: "Sustainable Environment",
+            title: "Technological Innovations in Sustainable Environment",
             image: "./tracks/track-tech.png",
-            description: "Emerging technologies and solutions for sustainable environmental management",
-            topics: ["Clean Technology", "Material Science", "Engineering Solutions", "Green Chemistry"],
             color: "#2B8C67"
         },
         {
-            title: "AI and Smart Technologies",
-            subtitle: "Monitoring Ecosystem Health",
+            title: "AI and Smart Technologies for Monitoring and Restoring Ecosystem Health",
             image: "./tracks/track-ai.png",
-            description: "Applications of AI and smart technologies for monitoring and restoring ecosystem health",
-            topics: ["Machine Learning", "Remote Sensing", "Smart Monitoring", "Predictive Analytics"],
             color: "#5E6CA2"
         },
         {
-            title: "Climate Action and Computational Modelling",
-            subtitle: "Environmental Sustainability",
+            title: "Climate Action and Computational Modelling for Environmental Sustainability",
             image: "./tracks/track-climate.png",
-            description: "Computational models and climate action strategies for environmental sustainability",
-            topics: ["Climate Models", "Simulation", "Carbon Footprint", "Emissions Tracking"],
             color: "#946B2D"
         },
         {
-            title: "Public Awareness and Education",
-            subtitle: "Educational Initiatives",
+            title: "Public Awareness and Educational Initiatives",
             image: "./tracks/track-education.png",
-            description: "Strategies for promoting environmental literacy and sustainable practices",
-            topics: ["Community Programs", "Behavioral Change", "Education Campaigns", "Public Engagement"],
             color: "#466365"
         }
     ]
@@ -150,7 +126,7 @@ seo:
 <!-- {% BlogLatest title="From Blog" /%} -->
 
 
-{% OrganizingCommittee
+<!-- {% OrganizingCommittee
     title="Organizing Committee"
     subtitle="The dedicated team behind ICPIES 2025"
     description="Our committee brings together experts from academia, industry, and policy to create a comprehensive and impactful conference experience."
@@ -297,6 +273,39 @@ seo:
         }
 
     ]
+/%} -->
+
+{% ContactUs
+    title="Contact Us"
+    subtitle="Get in touch with the ICPIES 2025 team"
+    description="Feel free to contact if you require any clarification or further information about the conference."
+    generalEmail="icpies@ou.ac.lk"
+    address="The Open University of Sri Lanka, Nawala, Nugegoda 10250, Sri Lanka"
+    contactPersons=[
+        {
+            name: "Eng. S. Himanujahn",
+            title: "Secretary",
+            email: "shima@ou.ac.lk"
+        },
+        {
+            name: "Eng. Zeena Weerabangsa",
+            title: "Secretary",
+            email: "mzwee@ou.ac.lk"
+        }
+    ]
+    socialMedia={
+        facebook: "https://facebook.com/ICPIES2025",
+        twitter: "https://twitter.com/ICPIES2025",
+        linkedin: "https://linkedin.com/company/icpies2025"
+    }
+/%}
+
+
+{% WelcomeFlyer
+    title="Join Us at ICPIES 2025"
+    subtitle="Be part of the global conversation on plastic innovation and environmental sustainability"
+    ctaText="Register Now"
+    ctaLink="/registration"
 /%}
 
 {% /Container %}

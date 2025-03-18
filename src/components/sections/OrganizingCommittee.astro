@@ -7,6 +7,7 @@ interface CommitteeMember {
     image?: string;
     country?: string;
     email?: string;
+    linkedin?: string;  // Add LinkedIn profile URL
     category?: string; // For grouping members (e.g., "Chair", "Co-Chair", "Technical Committee", etc.)
 }
 
@@ -21,7 +22,7 @@ const { title, subtitle, description, members } = Astro.props;
 
 // Group members by their category
 const groupedMembers = members.reduce((acc, member) => {
-    const category = member.category || 'Committee Members';
+    const category = member.category || 'Uncategorized';
     if (!acc[category]) {
         acc[category] = [];
     }
@@ -31,13 +32,23 @@ const groupedMembers = members.reduce((acc, member) => {
 
 // Order for the categories (you can adjust as needed)
 const categoryOrder = [
-    'Conference Chair',
-    'Conference Co-Chairs',
-    'Organizing Committee',
-    'Technical Committee',
-    'Scientific Committee',
-    'Advisory Committee',
-    'Committee Members'
+    "Advisory Board",
+    "Advisory Panel",
+    "Conference Chairs",
+    "Conference Secretariat",
+    "Technical Programme Committee",
+    "Organizing Committee",
+    "Programme Committee",
+    "Publication Committee",
+    "Financial Committee",
+    "International Relations",
+    "Publicity Committee",
+    "Special Sessions",
+    "Workshop Committee",
+    "Local Organizing Committee",
+    "Awards Committee",
+    "Poster Session Committee",
+    "Web Committee"
 ];
 
 // Sort the categories
@@ -48,163 +59,282 @@ const sortedCategories = Object.keys(groupedMembers).sort((a, b) => {
 });
 
 // Default avatar placeholder
-const defaultAvatar = "./committee/Ms.-J.-Kirushika.jpg";
+const defaultAvatar = "./committee/default-avatar.jpg";
 
-// Check if the image path exists
-const imageExists = (image: string) => {
-    if (!image) return false;
-    // This is a simple check, in a real-world environment you'd want to ensure the file exists
-    return true;
+// Function to get country flag emoji
+const getCountryFlag = (countryCode: string) => {
+    if (!countryCode) return "";
+    const codePoints = countryCode
+        .toUpperCase()
+        .split('')
+        .map(char => 127397 + char.charCodeAt(0));
+    return String.fromCodePoint(...codePoints);
+};
+
+// Check if the image path exists and use default if not
+function getImagePath(image?: string): string {
+    return image || defaultAvatar;
 }
 ---
 
-<section class="py-20 bg-gradient-to-b from-white to-slate-50">
-	<div class="container mx-auto px-4">
-		<div class="p-8 bg-[#F7F7F7] rounded-xl border-l-4 border-[#1A7A64] shadow-md">
+<section class="py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- <div class="text-center mb-16">
+            <h2 class="text-[2.13rem] leading-9 font-semibold mb-6 text-[#2C3E50]">
+                {title}
+            </h2>
 
-        <div class="text-center mb-16">
-            <h2 class="text-[2.13rem] leading-9 font-semibold mb-6 text-[#2C3E50]">{title}</h2>
-
-            <!-- Decorative divider line with gradient -->
             <div class="w-32 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-6"></div>
 
             {subtitle &&
-                <p class="text-xl text-[#2C3E50]/80 mb-4 font-medium">{subtitle}</p>
+                <p class="text-xl text-[#2C3E50]/80 mb-4 font-medium">
+                    {subtitle}
+                </p>
             }
 
             {description &&
-                <p class="max-w-3xl mx-auto text-[#2C3E50]/70 leading-relaxed">{description}</p>
+                <p class="max-w-3xl mx-auto text-[#2C3E50]/70 leading-relaxed mb-12">
+                    {description}
+                </p>
             }
+        </div> -->
 
-            <!-- Decorative elements -->
-            <div class="relative mt-8 mb-12">
-                <div class="absolute left-1/2 -translate-x-1/2 top-0 w-16 h-8">
-                    <div class="absolute left-0 top-0 w-2 h-2 rounded-full bg-[#1A7A64]/60"></div>
-                    <div class="absolute left-7 top-3 w-2 h-2 rounded-full bg-[#4ECDC4]/60"></div>
-                    <div class="absolute right-0 top-0 w-2 h-2 rounded-full bg-[#1A7A64]/60"></div>
-                </div>
-            </div>
-        </div>
-
-        {sortedCategories.map((category) => (
-            <div class="mb-16">
-                <div class="text-center mb-10">
-                    <h3 class="inline-block px-8 py-2 bg-gradient-to-r from-[#1A7A64] to-[#0D3B66] text-white rounded-full shadow-md text-lg font-semibold">
+        <!-- Committee Sections -->
+        <div class="space-y-20">
+            {sortedCategories.map((category) => (
+                <div class="committee-category">
+                    <h3 class="text-2xl font-semibold text-[#2C3E50] mb-8 pb-4 border-b border-gray-200">
                         {category}
                     </h3>
-                </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {groupedMembers[category].map((member, index) => (
-                        <div class="committee-member bg-white rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
-                            <div class="relative h-64 overflow-hidden">
-                                <!-- Top color accent -->
-                                <div class="absolute top-0 left-0 w-full h-2 bg-[#1A7A64] z-10"></div>
-
-                                <!-- Member image with gradient overlay -->
-                                <div class="absolute inset-0 bg-gradient-to-b from-black/5 to-black/60"></div>
-                                <img
-                                    src={member.image && imageExists(member.image) ? member.image : defaultAvatar}
-                                    alt={member.name}
-                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                    loading="lazy"
-                                />
-
-                                <!-- Member info overlay -->
-                                <div class="absolute inset-x-0 bottom-0 p-4 text-white">
-                                    <h4 class="text-xl font-bold truncate group-hover:text-[#4ECDC4] transition-colors">
-                                        {member.name}
-                                    </h4>
-                                    {member.title && (
-                                        <p class="text-sm text-white/90 truncate">{member.title}</p>
-                                    )}
-                                    {member.affiliation && (
-                                        <p class="text-xs text-white/80 truncate mt-1">{member.affiliation}</p>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div class="p-4 bg-white">
-                                {member.role && (
-                                    <div class="mb-2">
-                                        <span class="inline-block px-3 py-1 bg-[#1A7A64]/10 text-[#1A7A64] text-xs font-semibold rounded-full">
-                                            {member.role}
-                                        </span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {groupedMembers[category].map((member) => (
+                            <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                                <div class="flex flex-col h-full">
+                                    <!-- Member avatar - With larger images -->
+                                    <div class="relative bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] pt-6 px-6 pb-28">
+                                        <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
+                                            <div class="profile-image">
+                                                <img
+                                                    src={getImagePath(member.image)}
+                                                    alt={member.name}
+                                                    class="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
-                                )}
 
-                                <!-- Contact info with animated reveal on hover -->
-                                <div class="mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    {member.email && (
-                                        <a href={`mailto:${member.email}`} class="flex items-center text-sm text-slate-600 hover:text-[#1A7A64]">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                            </svg>
-                                            Contact
-                                        </a>
-                                    )}
+                                    <!-- Member details - Additional padding to accommodate larger image -->
+                                    <div class="pt-24 pb-6 px-6 text-center flex flex-col flex-grow">
+                                        <h4 class="text-lg font-semibold text-[#2C3E50]">
+                                            {member.name}
+                                            {/* {member.country &&
+                                                <span class="ml-1 text-sm" title={member.country}>{getCountryFlag(member.country)}</span>
+                                            } */}
+                                        </h4>
+
+                                        {member.title &&
+                                            <p class="text-[#1A7A64] font-medium mt-1 mb-2">{member.title}</p>
+                                        }
+
+                                        {member.affiliation &&
+                                            <p class="text-[#2C3E50]/70 text-sm mb-4">{member.affiliation}</p>
+                                        }
+
+                                        {member.role &&
+                                            <p class="text-[#2C3E50]/60 text-sm mb-4 italic">{member.role}</p>
+                                        }
+
+                                        <!-- Contact and social media links -->
+                                        <div class="mt-auto pt-4 flex flex-col items-center gap-3">
+                                            {(member.email || member.linkedin) &&
+                                                <div class="flex items-center justify-center gap-3">
+                                                    {member.email &&
+                                                        <a
+                                                            href={`mailto:${member.email}`}
+                                                            class="social-link email-link"
+                                                            aria-label={`Email ${member.name}`}
+                                                            title={`Email ${member.name}`}
+                                                        >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                            </svg>
+                                                        </a>
+                                                    }
+
+                                                    {member.linkedin &&
+                                                        <a
+                                                            href={member.linkedin}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            class="social-link linkedin-link"
+                                                            aria-label={`LinkedIn profile of ${member.name}`}
+                                                            title={`LinkedIn profile of ${member.name}`}
+                                                        >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                                                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                                                            </svg>
+                                                        </a>
+                                                    }
+                                                </div>
+                                            }
+
+                                            {/* {member.email &&
+                                                <a
+                                                    href={`mailto:${member.email}`}
+                                                    class="contact-button"
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                    </svg>
+                                                    Contact
+                                                </a>
+                                            } */}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-				</div>
-            </div>
-        ))}
-	</div>
+                        ))}
+                    </div>
+                </div>
+            ))}
+        </div>
     </div>
 </section>
 
 <style>
-    .committee-member {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Animations */
+    .committee-category {
+        animation: fadeInUp 0.8s ease-out forwards;
+        opacity: 0;
     }
 
-    /* Staggered hover effect for grid items */
-    @media (min-width: 768px) {
-        .committee-member:nth-child(odd):hover {
-            transform: translateY(-6px);
-        }
-
-        .committee-member:nth-child(even):hover {
-            transform: translateY(-6px);
-        }
-    }
-
-    /* Committee section specific animations */
-    @keyframes fade-in-up {
-        0% {
+    @keyframes fadeInUp {
+        from {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
         }
-        100% {
+        to {
             opacity: 1;
             transform: translateY(0);
         }
     }
 
-    .committee-member {
-        animation: fade-in-up 0.6s ease-out;
-        animation-fill-mode: both;
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
     }
 
-    .committee-member:nth-child(1) { animation-delay: 0.1s; }
-    .committee-member:nth-child(2) { animation-delay: 0.2s; }
-    .committee-member:nth-child(3) { animation-delay: 0.3s; }
-    .committee-member:nth-child(4) { animation-delay: 0.4s; }
-    .committee-member:nth-child(5) { animation-delay: 0.5s; }
-    .committee-member:nth-child(6) { animation-delay: 0.6s; }
-    /* Continue for more items as needed */
+    /* Apply animation delays for categories */
+    .committee-category:nth-child(1) { animation-delay: 0.1s; }
+    .committee-category:nth-child(2) { animation-delay: 0.2s; }
+    .committee-category:nth-child(3) { animation-delay: 0.3s; }
+    .committee-category:nth-child(4) { animation-delay: 0.4s; }
+    .committee-category:nth-child(5) { animation-delay: 0.5s; }
 
-    /* Shadow effect for category badges */
-    h3.inline-block {
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    /* Much larger profile image */
+    .profile-image {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        border: 6px solid white;
+        overflow: hidden;
+        background-color: white;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    /* Enhance accessibility */
-    @media (prefers-reduced-motion: reduce) {
-        .committee-member {
-            animation: none;
+    /* Hover effect for profile image */
+    .profile-image:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    /* Social media links */
+    .social-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        background-color: rgba(26, 122, 100, 0.1);
+        color: #1A7A64;
+    }
+
+    .social-link:hover {
+        background-color: #1A7A64;
+        color: white;
+        transform: translateY(-3px);
+    }
+
+    .linkedin-link {
+        background-color: rgba(10, 102, 194, 0.1);
+        color: #0A66C2;
+    }
+
+    .linkedin-link:hover {
+        background-color: #0A66C2;
+        color: white;
+    }
+
+    /* Contact button */
+    .contact-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        background-color: #1A7A64;
+        color: white;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        margin-top: 0.5rem;
+    }
+
+    .contact-button:hover {
+        background-color: #156954;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(26, 122, 100, 0.25);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1280px) {
+        .profile-image {
+            width: 140px;
+            height: 140px;
+        }
+    }
+
+    @media (max-width: 1024px) {
+        .profile-image {
+            width: 130px;
+            height: 130px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .profile-image {
+            width: 150px;
+            height: 150px;
+        }
+
+        .committee-card {
+            max-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
         }
     }
 </style>

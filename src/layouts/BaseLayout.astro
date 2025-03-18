@@ -16,6 +16,8 @@ const { widget } = getLocalizedSettings(currentLocale);
 
 type Props = {
 	seo?: SEOProps | MinimalSeo;
+	title?: string;
+	description?: string;
 };
 
 const { seo } = Astro.props;
@@ -32,6 +34,6 @@ const { seo } = Astro.props;
 		<WelcomeFlyerModal />
 		<slot />
 		{widget.enabled && <Widget />}
-		<!-- <Footer /> -->
+		<Footer />
 	</body>
 </html>

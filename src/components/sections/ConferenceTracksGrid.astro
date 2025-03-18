@@ -118,33 +118,10 @@ function getIconForTopic(topic: string): string {
           />
 
           <div class="absolute inset-0 z-20 flex flex-col justify-end p-6 text-white">
-            <div class="mb-2 inline-block px-3 py-1 bg-[var(--card-color)] rounded-full text-xs font-semibold tracking-wider">
-              {track.subtitle}
-            </div>
-            <h3 class="text-2xl font-bold mb-2 group-hover:text-[var(--card-color)] transition-colors">
+            <!-- Removed the color change on hover from the text -->
+            <h3 class="text-2xl font-bold mb-2 text-white transition-all group-hover:text-shadow-sm">
               {track.title}
             </h3>
-            <p class="text-sm text-white/80 mb-4 line-clamp-2 group-hover:line-clamp-none transition-all duration-300">
-              {track.description}
-            </p>
-
-            {track.topics && (
-              <div class="flex flex-wrap gap-2 mt-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                {track.topics.slice(0, 3).map((topic) => (
-                  <span class="inline-flex items-center gap-1 bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                      <use href={`/src/assets/icons/heroicons/${getIconForTopic(topic)}.svg#icon`}></use>
-                    </svg>
-                    {topic}
-                  </span>
-                ))}
-                {track.topics.length > 3 && (
-                  <span class="inline-block bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium">
-                    +{track.topics.length - 3} more
-                  </span>
-                )}
-              </div>
-            )}
 
             <div class="absolute top-5 right-5 bg-white/20 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -153,12 +130,25 @@ function getIconForTopic(topic: string): string {
             </div>
           </div>
 
-
+          <!-- Add a clickable link overlay to the entire card -->
+          {/* <a href={`/tracks/${track.title.toLowerCase().replace(/\s+/g, '-')}`} class="absolute inset-0 z-30" aria-label={`Learn more about ${track.title}`}></a> */}
         </div>
       ))}
     </div>
 
-    
+    <!-- {viewAllLink && (
+      <div class="text-center mt-12">
+        <a
+          href={viewAllLink}
+          class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] text-white font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-[#1A7A64]/30 transform hover:-translate-y-1"
+        >
+          View All Tracks
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </a>
+      </div>
+    )} -->
   </div>
 </div>
 
@@ -174,11 +164,13 @@ function getIconForTopic(topic: string): string {
 
   /* Staggered hover effect for grid items */
   @media (min-width: 1024px) {
-    .track-card:nth-child(odd):hover {
+    .track-card:nth-child(4n+1):hover,
+    .track-card:nth-child(4n+3):hover {
       transform: translateY(-8px) rotate(-1deg);
     }
 
-    .track-card:nth-child(even):hover {
+    .track-card:nth-child(4n+2):hover,
+    .track-card:nth-child(4n+4):hover {
       transform: translateY(-8px) rotate(1deg);
     }
   }
@@ -216,5 +208,10 @@ function getIconForTopic(topic: string): string {
 
   .track-card:hover::after {
     transform: scaleX(1);
+  }
+
+  /* Add subtle text shadow on hover for better readability while keeping text white */
+  .group-hover\:text-shadow-sm {
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
   }
 </style>
