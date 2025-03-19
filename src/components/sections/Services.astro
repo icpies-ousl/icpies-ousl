@@ -36,6 +36,15 @@ const images = import.meta.glob<{ default: ImageMetadata }>(
 <div class="pt-36" id="about">
     {aboutTitle && (
         <div class="mb-16 p-8 bg-[#F7F7F7] rounded-xl border-l-4 border-[#1A7A64] shadow-md">
+
+<div class="text-center max-w-4xl mx-auto mb-6">
+                <h2 class="text-3xl font-bold text-[#2C3E50] mb-3">
+                    {aboutTitle}
+                </h2>
+				<div class="w-32 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-6"></div>                <p class="text-lg text-[#2C3E50]/90 leading-relaxed">
+                    {aboutDescription}
+                </p>
+            </div>
            	{aboutLogo && (
 				<div class="flex justify-center mb-12">
 					<div class="conference-logo-container relative">
@@ -59,15 +68,6 @@ const images = import.meta.glob<{ default: ImageMetadata }>(
 				</div>
 			)}
 
-
-            <div class="text-center max-w-4xl mx-auto mb-6">
-                <h2 class="text-3xl font-bold text-[#2C3E50] mb-3">
-                    {aboutTitle}
-                </h2>
-				<div class="w-32 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-6"></div>                <p class="text-lg text-[#2C3E50]/90 leading-relaxed">
-                    {aboutDescription}
-                </p>
-            </div>
 
             {aboutTheme && (
                 <div class="mt-10">
