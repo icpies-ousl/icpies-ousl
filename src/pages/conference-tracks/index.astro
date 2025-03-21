@@ -147,70 +147,72 @@ function getIconForTopic(topic: string): string {
       </div>
     </div>
 
-    <!-- Conference Tracks Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {tracks.map((track) => (
-        <div class="mb-6 group">
-          <!-- Card Header with Image -->
-          <div
-            class="track-card group relative h-64 rounded-t-xl overflow-hidden shadow-md transition-all duration-300"
-            style={`--card-color: ${track.color}`}
-          >
-            <div class="absolute inset-0 bg-gradient-to-br from-black/60 to-black/20 z-10"></div>
-            <div class="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+	<div class="mt-12 mb-20">
+	  <h2 class="text-3xl font-bold text-[#2C3E50] mb-8 text-center">Our Research Tracks</h2>
 
-            <div class="absolute top-0 left-0 w-full h-2 bg-[var(--card-color)] z-20"></div>
+	  <div class="space-y-6">
+		{tracks.map((track, index) => (
+		  <div class="flex flex-col md:flex-row items-start gap-6 p-6 bg-white rounded-xl shadow-sm transition-all duration-300 hover:shadow-md">
+			<!-- Left side with circular number and image -->
+			<div class="flex-shrink-0 relative mx-auto md:mx-0">
+			  <!-- Circular background -->
+			  <div class="w-24 h-24 rounded-full overflow-hidden border-4" style={`border-color: ${track.color}`}>
+				<img
+				  src={track.image}
+				  alt={track.title}
+				  class="w-full h-full object-cover"
+				/>
+			  </div>
 
-            <img
-              src={track.image}
-              alt={track.title}
-              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
+			  <!-- Track number -->
+			  <div
+				class="absolute -top-3 -right-3 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-xl"
+				style={`background-color: ${track.color}`}
+			  >
+				{index + 1}
+			  </div>
+			</div>
 
-            <div class="absolute inset-0 z-20 flex flex-col justify-end p-6 text-white">
-              <h3 class="text-xl md:text-2xl font-bold mb-2 text-white transition-all group-hover:text-shadow-sm">
-                {track.title}
-              </h3>
-            </div>
-          </div>
+			<!-- Right side with track details -->
+			<div class="flex-1">
+			  <h3 class="text-xl font-bold text-[#2C3E50] mb-2" style={`color: ${track.color}`}>
+				{track.title}
+			  </h3>
 
-          <!-- Card Body with Description and Topics -->
-          {/* <div class="bg-white p-6 rounded-b-xl shadow-md border-t-0 transition-all duration-300 group-hover:shadow-lg">
-            <p class="text-[#2C3E50]/80 mb-6">
-              {track.description}
-            </p>
+			  <p class="text-[#2C3E50]/80 mb-4 text-base">
+				{track.description}
+			  </p>
 
-            <h4 class="font-semibold text-[#2C3E50] mb-4">Key Topics:</h4>
-            <div class="flex flex-wrap gap-2">
-              {track.topics.map((topic) => (
-                <span
-                  class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-[var(--card-color)]/10 text-[var(--card-color)] font-medium"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={
-                      getIconForTopic(topic) === "microscope" ? "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" :
-                      getIconForTopic(topic) === "magnifying-glass" ? "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" :
-                      getIconForTopic(topic) === "arrow-path" ? "M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" :
-                      getIconForTopic(topic) === "trash" ? "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" :
-                      getIconForTopic(topic) === "document-text" ? "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" :
-                      getIconForTopic(topic) === "globe-alt" ? "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" :
-                      getIconForTopic(topic) === "cpu-chip" ? "M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" :
-                      getIconForTopic(topic) === "sparkles" ? "M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" :
-                      getIconForTopic(topic) === "beaker" ? "M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" :
-                      getIconForTopic(topic) === "academic-cap" ? "M12 14l9-5-9-5-9 5 9 5z M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" :
-                      getIconForTopic(topic) === "leaf" ? "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" :
-                      getIconForTopic(topic) === "tag" ? "M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" :
-                      "M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                    } />
-                  </svg>
-                  {topic}
-                </span>
-              ))}
-            </div>
-          </div> */}
-        </div>
-      ))}
-    </div>
+			  {/* <div class="flex flex-wrap gap-2">
+				{track.topics.slice(0, 4).map((topic) => (
+				  <span
+					class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+					style={`background-color: ${track.color}20; color: ${track.color}`}
+				  >
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={
+						topic.toLowerCase().includes("micro") ? "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" :
+						topic.toLowerCase().includes("recycl") ? "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" :
+						topic.toLowerCase().includes("polic") ? "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" :
+						"M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+					  } />
+					</svg>
+					{topic}
+				  </span>
+				))}
+				{track.topics.length > 4 && (
+				  <span
+					class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-600 font-medium cursor-pointer hover:bg-gray-200"
+				  >
+					+{track.topics.length - 4} more
+				  </span>
+				)}
+			  </div> */}
+			</div>
+		  </div>
+		))}
+	  </div>
+	</div>
 
     <!-- Submissions Section -->
     <div class="my-20 py-8 bg-[#F7F7F7] rounded-xl border-l-4 border-[#1A7A64] shadow-md">

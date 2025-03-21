@@ -87,56 +87,96 @@ function getIconForTopic(topic: string): string {
           {description}
         </p>
       }
-
-      <!-- Decorative elements for consistency -->
-      <div class="relative mt-8 mb-12">
-        <div class="absolute left-1/2 -translate-x-1/2 top-0 w-16 h-8">
-          <div class="absolute left-0 top-0 w-2 h-2 rounded-full bg-[#1A7A64]/60"></div>
-          <div class="absolute left-7 top-3 w-2 h-2 rounded-full bg-[#4ECDC4]/60"></div>
-          <div class="absolute right-0 top-0 w-2 h-2 rounded-full bg-[#1A7A64]/60"></div>
-        </div>
-      </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="space-y-4">
       {tracks.map((track, index) => (
-        <div
-          class="track-card group relative overflow-hidden rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-          style={`--card-color: ${track.color || defaultColors[index % defaultColors.length]}`}
-        >
-          <div class="absolute inset-0 bg-gradient-to-br from-black/60 to-black/20 z-10"></div>
-          <div
-            class="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent z-10"
-          ></div>
+        <div class="flex flex-col md:flex-row items-center gap-4 p-4 bg-white rounded-xl shadow-sm transition-all duration-300 hover:shadow-md border border-gray-100 group">
+          <!-- Left side with circular number and image -->
+          <div class="flex-shrink-0 relative">
+            <!-- Circular background with image -->
+            <div class="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-3" style={`border-color: ${track.color || defaultColors[index % defaultColors.length]}`}>
+              <img
+                src={track.image}
+                alt={track.title}
+                class="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
 
-          <div class="absolute top-0 left-0 w-full h-2 bg-[var(--card-color)] z-20"></div>
-
-          <img
-            src={track.image}
-            alt={track.title}
-            class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-
-          <div class="absolute inset-0 z-20 flex flex-col justify-end p-6 text-white">
-            <!-- Removed the color change on hover from the text -->
-            <h3 class="text-2xl font-bold mb-2 text-white transition-all group-hover:text-shadow-sm">
-              {track.title}
-            </h3>
-
-            <div class="absolute top-5 right-5 bg-white/20 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
+            <!-- Track number badge -->
+            <div
+              class="absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-sm"
+              style={`background-color: ${track.color || defaultColors[index % defaultColors.length]}`}
+            >
+              {index + 1}
             </div>
           </div>
 
-          <!-- Add a clickable link overlay to the entire card -->
-          {/* <a href={`/tracks/${track.title.toLowerCase().replace(/\s+/g, '-')}`} class="absolute inset-0 z-30" aria-label={`Learn more about ${track.title}`}></a> */}
+          <!-- Right side with track details -->
+          <div class="flex-1 flex flex-col md:flex-row md:items-center">
+            <div class="md:flex-1">
+              <h3 class="text-lg font-bold text-center md:text-left"
+                  style={`color: ${track.color || defaultColors[index % defaultColors.length]}`}>
+                {track.title}
+              </h3>
+
+              {track.subtitle && (
+                <p class="text-sm font-medium text-gray-500 mb-0 text-center md:text-left">
+                  {track.subtitle}
+                </p>
+              )}
+            </div>
+
+            {track.topics && track.topics.length > 0 && (
+              <div class="hidden md:flex flex-wrap gap-2 mt-2 md:mt-0 md:justify-end">
+                {track.topics.slice(0, 2).map((topic) => (
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium transition-all duration-300 hover:shadow-sm"
+                    style={`background-color: ${track.color || defaultColors[index % defaultColors.length]}20; color: ${track.color || defaultColors[index % defaultColors.length]}`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={
+                        topic.toLowerCase().includes("micro") ? "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" :
+                        topic.toLowerCase().includes("recycl") ? "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" :
+                        topic.toLowerCase().includes("polic") ? "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" :
+                        "M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                      } />
+                    </svg>
+                    {topic}
+                  </span>
+                ))}
+                {track.topics.length > 2 && (
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-600 font-medium cursor-pointer hover:bg-gray-200 transition-all duration-300"
+                  >
+                    +{track.topics.length - 2} more
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+
+          <!-- Right side arrow for mobile -->
+          <div class="flex md:hidden items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+
+          <!-- Right side arrow for desktop -->
+          <div class="hidden md:flex items-center justify-center">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 group-hover:bg-gray-200 transition-colors duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
         </div>
       ))}
     </div>
 
-    <!-- {viewAllLink && (
+    {viewAllLink && (
       <div class="text-center mt-12">
         <a
           href={viewAllLink}
@@ -148,70 +188,44 @@ function getIconForTopic(topic: string): string {
           </svg>
         </a>
       </div>
-    )} -->
+    )}
   </div>
 </div>
 
 <style>
-  /* Styles remain the same */
-  .track-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* Group hover effects */
+  .group {
+    position: relative;
+    cursor: pointer;
   }
 
-  .track-card:hover {
-    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  }
-
-  /* Staggered hover effect for grid items */
-  @media (min-width: 1024px) {
-    .track-card:nth-child(4n+1):hover,
-    .track-card:nth-child(4n+3):hover {
-      transform: translateY(-8px) rotate(-1deg);
-    }
-
-    .track-card:nth-child(4n+2):hover,
-    .track-card:nth-child(4n+4):hover {
-      transform: translateY(-8px) rotate(1deg);
-    }
-  }
-
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  /* Animation for the decorative elements */
-  @keyframes float-slow {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-5px);
-    }
-  }
-
-  .track-card::after {
+  .group::after {
     content: "";
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 5px;
-    background: var(--card-color);
+    height: 2px;
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 0.5s ease;
-    z-index: 25;
+    transition: transform 0.3s ease;
   }
 
-  .track-card:hover::after {
+  .group:hover::after {
     transform: scaleX(1);
   }
 
-  /* Add subtle text shadow on hover for better readability while keeping text white */
-  .group-hover\:text-shadow-sm {
-    text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  .group:nth-child(1)::after { background-color: #1A7A64; }
+  .group:nth-child(2)::after { background-color: #2E5EAA; }
+  .group:nth-child(3)::after { background-color: #9B4D85; }
+  .group:nth-child(4)::after { background-color: #D66853; }
+  .group:nth-child(5)::after { background-color: #2B8C67; }
+  .group:nth-child(6)::after { background-color: #5E6CA2; }
+  .group:nth-child(7)::after { background-color: #946B2D; }
+  .group:nth-child(8)::after { background-color: #466365; }
+
+  /* Smaller border width */
+  .border-3 {
+    border-width: 3px;
   }
 </style>
