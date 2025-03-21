@@ -1,327 +1,359 @@
 ---
 interface DateItem {
-    event: string;
-    date: string;
-    isPassed?: boolean;
-    isHighlighted?: boolean;
+  event: string;
+  date: string;
+  isPassed?: boolean;
+  isHighlighted?: boolean;
+  icon?: string; // Optional icon name for events
 }
 
 interface Props {
-    title: string;
-    subtitle?: string;
-    dates: DateItem[];
+  title: string;
+  subtitle?: string;
+  dates: DateItem[];
 }
 
 const { title, subtitle, dates } = Astro.props;
 
 // Helper to check if a date has passed
 const isDatePassed = (dateStr: string) => {
-    const today = new Date();
-    const itemDate = new Date(dateStr);
-    return today > itemDate;
+  const today = new Date();
+  const itemDate = new Date(dateStr);
+  return today > itemDate;
 };
 
 // Process dates and add status
 const processedDates = dates.map(date => ({
-    ...date,
-    isPassed: date.isPassed !== undefined ? date.isPassed : isDatePassed(date.date)
+  ...date,
+  isPassed: date.isPassed !== undefined ? date.isPassed : isDatePassed(date.date)
 }));
 
-// Group dates by month for visual organization
-const groupedDates = processedDates.reduce((acc, date) => {
-    const month = new Date(date.date).toLocaleString('default', { month: 'long', year: 'numeric' });
-    if (!acc[month]) {
-        acc[month] = [];
-    }
-    acc[month].push(date);
-    return acc;
-}, {} as Record<string, DateItem[]>);
+// Sort dates chronologically
+const sortedDates = [...processedDates].sort((a, b) => {
+  return new Date(a.date).getTime() - new Date(b.date).getTime();
+});
 
 // Format date for display (10th March 2025 format)
 const formatDateWithSuffix = (dateStr: string) => {
-    const date = new Date(dateStr);
-    const day = date.getDate();
+  const date = new Date(dateStr);
+  const day = date.getDate();
 
-    // Add suffix to day (st, nd, rd, th)
-    const suffix =
-        day % 10 === 1 && day !== 11 ? 'st' :
-        day % 10 === 2 && day !== 12 ? 'nd' :
-        day % 10 === 3 && day !== 13 ? 'rd' : 'th';
+  // Add suffix to day (st, nd, rd, th)
+  const suffix =
+    day % 10 === 1 && day !== 11 ? 'st' :
+    day % 10 === 2 && day !== 12 ? 'nd' :
+    day % 10 === 3 && day !== 13 ? 'rd' : 'th';
 
-    return date.toLocaleDateString('en-US', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-    }).replace(/\d+/, day + suffix);
+  return date.toLocaleDateString('en-US', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }).replace(/\d+/, day + suffix);
 };
+
+// Format short date
+const formatShortDate = (dateStr: string) => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-US', {
+    day: '2-digit',
+    month: 'short'
+  });
+};
+
+// Get event type based on event name
+const getEventType = (eventName: string) => {
+  if (eventName.includes("Camera-ready") || eventName.includes("Early Bird") || eventName.includes("Registration Deadline")) {
+    return "physical";
+  }
+  return "standard";
+};
+
+// Calculate progress percentage
+const calculateProgress = () => {
+  if (sortedDates.length <= 1) return 100;
+
+  const firstDate = new Date(sortedDates[0].date).getTime();
+  const lastDate = new Date(sortedDates[sortedDates.length - 1].date).getTime();
+  const today = new Date().getTime();
+
+  if (today <= firstDate) return 0;
+  if (today >= lastDate) return 100;
+
+  return Math.floor(((today - firstDate) / (lastDate - firstDate)) * 100);
+};
+
+const progressPercentage = calculateProgress();
 ---
 
-<div class="py-20 bg-[#F7F7F7] rounded-xl border-l-4 border-[#1A7A64] shadow-md" id="important-dates">
-    <div class="max-w-5xl mx-auto px-4">
-        <div class="text-center mb-12">
-			<h2 class="text-[2.13rem] leading-9 font-semibold mb-6 text-[#2C3E50]">{title}</h2>
-            <div class="w-32 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-6"></div>
-            {subtitle &&
-                <p class="text-xl text-[#2C3E50]/80 mt-6 max-w-3xl mx-auto">
-                    {subtitle}
-                </p>
-            }
-        </div>
+<section class="timeline-section py-10 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900" id="important-dates">
+  <div class="max-w-6xl mx-auto">
+    <!-- Simple header -->
+    <div class="text-center mb-10">
+      <h2 class="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-white mb-3">{title}</h2>
 
-        <div class="timeline-container relative">
-            <!-- Timeline line with animated dots -->
-            <div class="absolute left-1/2 transform -translate-x-1/2 h-full">
-                <div class="relative h-full">
-                    <!-- Main line -->
-                    <div class="absolute inset-0 w-1 bg-gradient-to-b from-[#1A7A64] to-[#0D3B66] rounded"></div>
-
-                    <!-- Animated traveling dot -->
-                    <div class="absolute w-3 h-3 bg-[#4ECDC4] rounded-full left-1/2 transform -translate-x-1/2 traveling-dot"></div>
-                </div>
-            </div>
-
-												<!-- Timeline content -->
-						<div class="relative z-10">
-							{Object.entries(groupedDates).map(([month, monthDates], monthIndex) => (
-								<div class="mb-14">
-									<div class="flex justify-center">
-										<div class="month-marker py-2 px-8 bg-gradient-to-r from-[#1A7A64] to-[#0D3B66] text-white rounded-full shadow-lg text-sm font-semibold mb-8 transform hover:scale-105 transition-transform duration-300">
-											<span class="tracking-wider">{month}</span>
-										</div>
-									</div>
-
-									<div class="space-y-10">
-										{monthDates.map((dateItem, index) => {
-											// Calculate global index across all months to maintain consistent alternation
-											let globalIndex = monthIndex * 10 + index;
-
-											// Check if this is one of the last three conference events
-											const isPhysicalEvent =
-												dateItem.event.includes("Camera-ready") ||
-												dateItem.event.includes("Early Bird") ||
-												dateItem.event.includes("Registration Deadline");
-
-											return (
-												<div class={`date-item flex flex-col md:flex-row items-center ${globalIndex % 2 === 0 ? 'md:flex-row-reverse' : ''} ${(dateItem.isHighlighted || isPhysicalEvent) ? 'highlighted-item' : ''}`}>
-													<!-- Date -->
-													<div class="date-side w-full md:w-1/2 px-4 flex md:justify-end">
-														<div class={`date-badge px-5 py-3 rounded-xl shadow-md ${
-															dateItem.isPassed
-																? 'bg-[#2C3E50]/10 text-[#2C3E50]/60'
-																: isPhysicalEvent
-																	? 'bg-gradient-to-br from-[#4ECDC4] to-[#1A7A64] text-white border-2 border-[#4ECDC4]'
-																	: dateItem.isHighlighted
-																		? 'bg-gradient-to-br from-[#FF9F1C] to-[#FF8C00] text-white border-2 border-[#FF9F1C]'
-																		: 'bg-gradient-to-br from-[#4ECDC4] to-[#1A7A64] text-white'
-														} inline-block transform transition-all duration-300 hover:shadow-xl`}>
-															<div class="flex items-center justify-center">
-																<div class="text-center">
-																	<span class="text-xl font-bold block">{new Date(dateItem.date).toLocaleDateString('default', { day: '2-digit' })}</span>
-																	<span class="text-xs tracking-wide uppercase opacity-80">{new Date(dateItem.date).toLocaleDateString('default', { month: 'short' })}</span>
-																</div>
-																{(dateItem.isHighlighted || isPhysicalEvent) && (
-																	<div class={`ml-2 w-2 h-2 rounded-full ${isPhysicalEvent ? 'bg-[#1A7A64] animate-ping-slow' : 'bg-white animate-ping-slow'}`}></div>
-																)}
-															</div>
-														</div>
-													</div>
-
-													<!-- Timeline dot -->
-													<div class="timeline-dot relative">
-														<div class={`timeline-point absolute left-1/2 transform -translate-x-1/2 rounded-full ${
-															dateItem.isPassed
-																? 'w-4 h-4 bg-[#2C3E50]/30 border-4 border-[#2C3E50]/20'
-																: isPhysicalEvent
-																	? 'w-6 h-6 bg-[#1A7A64] border-[3px] border-[#4ECDC4]/70 animate-pulse-glow-green'
-																	: dateItem.isHighlighted
-																		? 'w-6 h-6 bg-[#FF9F1C] border-[3px] border-[#FF9F1C]/30 animate-pulse-glow'
-																		: 'w-5 h-5 bg-[#1A7A64] border-4 border-[#4ECDC4]/30'
-														}`}></div>
-													</div>
-
-													<!-- Event -->
-													<div class="event-side w-full md:w-1/2 px-4">
-														<div class={`event-card p-6 rounded-xl transition-all duration-300 ${
-															dateItem.isPassed
-																? 'bg-white/50 border border-[#2C3E50]/10'
-																: isPhysicalEvent
-																	? 'bg-white shadow-lg hover:shadow-xl border-l-4 border-[#1A7A64]'
-																	: dateItem.isHighlighted
-																		? 'bg-white shadow-lg hover:shadow-xl border-l-4 border-[#FF9F1C]'
-																		: 'bg-white shadow-md hover:shadow-lg'
-														}`}>
-															<h3 class={`font-bold text-xl ${
-																dateItem.isPassed
-																	? 'text-[#2C3E50]/60'
-																	: isPhysicalEvent
-																		? 'text-[#1A7A64]'
-																		: dateItem.isHighlighted
-																			? 'text-[#FF9F1C]'
-																			: 'text-[#1A7A64]'
-															}`}>
-																{dateItem.event}
-															</h3>
-															<p class={`mt-2 ${
-																dateItem.isPassed
-																	? 'text-[#2C3E50]/40'
-																	: 'text-[#2C3E50]/70'
-															}`}>
-																{formatDateWithSuffix(dateItem.date)}
-															</p>
-
-															{!dateItem.isPassed && (
-																<>
-																	{isPhysicalEvent && (
-																		<div class="mt-3 inline-block px-3 py-1 bg-[#1A7A64]/10 text-[#1A7A64] text-xs font-semibold rounded-full">
-																			Hybrid Conference
-																		</div>
-																	)}
-
-																	{dateItem.isHighlighted && !isPhysicalEvent && (
-																		<div class="mt-3 inline-block px-3 py-1 bg-[#FF9F1C]/10 text-[#FF9F1C] text-xs font-semibold rounded-full">
-																			Current Focus
-																		</div>
-																	)}
-																</>
-															)}
-														</div>
-													</div>
-												</div>
-											);
-										})}
-									</div>
-								</div>
-							))}
-						</div>
-        </div>
-
-        <!-- Enhanced Legend -->
-        <div class="mt-16 flex flex-wrap justify-center gap-8 text-sm">
-            <div class="legend-item flex items-center gap-3 bg-white/80 px-4 py-2 rounded-lg shadow-sm">
-                <div class="w-4 h-4 rounded-full bg-[#1A7A64] border-4 border-[#4ECDC4]/30"></div>
-                <span class="text-[#2C3E50]">Upcoming Deadlines</span>
-            </div>
-            <div class="legend-item flex items-center gap-3 bg-white/80 px-4 py-2 rounded-lg shadow-sm">
-                <div class="w-4 h-4 rounded-full bg-[#FF9F1C] border-4 border-[#FF9F1C]/30 animate-pulse-glow"></div>
-                <span class="text-[#2C3E50]">Current Focus</span>
-            </div>
-            <div class="legend-item flex items-center gap-3 bg-white/80 px-4 py-2 rounded-lg shadow-sm">
-                <div class="w-4 h-4 rounded-full bg-[#2C3E50]/30 border-4 border-[#2C3E50]/20"></div>
-                <span class="text-[#2C3E50]">Past Deadlines</span>
-            </div>
-        </div>
+      {subtitle &&
+        <p class="text-base text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          {subtitle}
+        </p>
+      }
     </div>
-</div>
+
+    <!-- Simple legend -->
+    <div class="flex justify-center gap-6 mb-8 text-sm">
+      <div class="flex items-center gap-2">
+        <div class="w-3 h-3 rounded-full bg-indigo-500"></div>
+        <span class="text-gray-600 dark:text-gray-300">Upcoming</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+        <span class="text-gray-600 dark:text-gray-300">Current Focus</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+        <span class="text-gray-600 dark:text-gray-300">Past</span>
+      </div>
+    </div>
+
+    <!-- Clean horizontal timeline -->
+    <div class="timeline-wrapper relative mt-12 mb-8 overflow-hidden">
+      <!-- Progress bar -->
+      <div class="absolute w-full h-0.5 top-9 bg-gray-200 dark:bg-gray-700 z-0">
+        <div class="h-full bg-indigo-500 dark:bg-indigo-400" style={`width: ${progressPercentage}%`}></div>
+      </div>
+
+      <!-- Timeline nodes -->
+      <div class="timeline-nodes relative flex min-w-max overflow-x-auto hide-scrollbar py-4 px-2">
+        {sortedDates.map((dateItem, index) => {
+          const eventType = getEventType(dateItem.event);
+          const isHighlighted = dateItem.isHighlighted;
+          const isPassed = dateItem.isPassed;
+
+          return (
+            <div class="timeline-node relative mx-4 first:ml-2 last:mr-2" style="min-width: 160px; max-width: 160px;">
+              <!-- Node point -->
+              <div class={`absolute left-1/2 top-5 w-4 h-4 rounded-full z-10 -translate-x-1/2 -translate-y-1/2 ${
+                isPassed
+                  ? 'bg-gray-300 dark:bg-gray-600'
+                  : isHighlighted
+                    ? 'bg-amber-500 dark:bg-amber-400'
+                    : 'bg-indigo-500 dark:bg-indigo-400'
+              }`}></div>
+
+              <!-- Date above the line -->
+              <div class="text-center mb-8">
+                <span class={`text-sm font-medium ${
+                  isPassed
+                    ? 'text-gray-500 dark:text-gray-400'
+                    : isHighlighted
+                      ? 'text-amber-600 dark:text-amber-400'
+                      : 'text-indigo-600 dark:text-indigo-400'
+                }`}>
+                  {formatShortDate(dateItem.date)}
+                </span>
+              </div>
+
+              <!-- Event card below the line -->
+              <div class={`mt-6 p-3 border rounded shadow-sm transition ${
+                isPassed
+                  ? 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+                  : isHighlighted
+                    ? 'bg-white dark:bg-gray-800 border-amber-200 dark:border-amber-700'
+                    : 'bg-white dark:bg-gray-800 border-indigo-200 dark:border-indigo-700'
+              }`}>
+                <h3 class={`text-sm font-medium mb-1 ${
+                  isPassed
+                    ? 'text-gray-500 dark:text-gray-400'
+                    : isHighlighted
+                      ? 'text-amber-700 dark:text-amber-300'
+                      : 'text-indigo-700 dark:text-indigo-300'
+                }`}>
+                  {dateItem.event}
+                </h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  {formatDateWithSuffix(dateItem.date)}
+                </p>
+
+                {!isPassed && (
+                  <div class="mt-2">
+                    {eventType === "physical" && (
+                      <span class="inline-block px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-300 text-xs rounded">
+                        Event
+                      </span>
+                    )}
+                    {isHighlighted && eventType !== "physical" && (
+                      <span class="inline-block px-2 py-0.5 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-300 text-xs rounded">
+                        Current
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <!-- Scroll indicators -->
+      <div class="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white dark:from-gray-900 to-transparent pointer-events-none"></div>
+      <div class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white dark:from-gray-900 to-transparent pointer-events-none"></div>
+    </div>
+
+    <!-- Mobile view toggle -->
+    <div class="md:hidden text-center mt-6">
+      <button class="view-all-btn px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-md">
+        View All Dates
+      </button>
+    </div>
+
+    <!-- Mobile list view -->
+    <div class="md:hidden mobile-dates-list mt-8 hidden space-y-3">
+      {sortedDates.map((dateItem) => {
+        const eventType = getEventType(dateItem.event);
+        const isHighlighted = dateItem.isHighlighted;
+        const isPassed = dateItem.isPassed;
+
+        return (
+          <div class={`p-3 border rounded shadow-sm ${
+            isPassed
+              ? 'border-gray-200 dark:border-gray-700'
+              : isHighlighted
+                ? 'border-amber-200 dark:border-amber-700'
+                : 'border-indigo-200 dark:border-indigo-700'
+          }`}>
+            <div class="flex justify-between">
+              <div>
+                <h3 class={`font-medium ${
+                  isPassed
+                    ? 'text-gray-500 dark:text-gray-400'
+                    : isHighlighted
+                      ? 'text-amber-700 dark:text-amber-300'
+                      : 'text-indigo-700 dark:text-indigo-300'
+                }`}>
+                  {dateItem.event}
+                </h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                  {formatDateWithSuffix(dateItem.date)}
+                </p>
+              </div>
+              <div class={`flex-shrink-0 ml-4 w-12 h-12 rounded-full flex items-center justify-center ${
+                isPassed
+                  ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
+                  : isHighlighted
+                    ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300'
+                    : 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300'
+              }`}>
+                <div class="text-center">
+                  <span class="text-lg font-bold">{new Date(dateItem.date).getDate()}</span>
+                  <span class="block text-xs uppercase">{new Date(dateItem.date).toLocaleDateString('en-US', { month: 'short' })}</span>
+                </div>
+              </div>
+            </div>
+
+            {!isPassed && (
+              <div class="mt-2">
+                {eventType === "physical" && (
+                  <span class="inline-block px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-300 text-xs rounded">
+                    Event
+                  </span>
+                )}
+                {isHighlighted && eventType !== "physical" && (
+                  <span class="inline-block px-2 py-0.5 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-300 text-xs rounded">
+                    Current
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      })}
+
+      <div class="text-center mt-4">
+        <button class="hide-all-btn px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-md">
+          Return to Timeline
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
 
 <style>
-    .timeline-container {
-        padding: 2rem 0;
-    }
+  /* Hide scrollbar but keep functionality */
+  .hide-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
 
-    .date-item {
-        margin-bottom: 3rem;
-        position: relative;
-    }
-
-    .timeline-dot {
-        min-width: 30px;
-        min-height: 30px;
-        margin: 1rem 0;
-    }
-
-    .highlighted-item {
-        z-index: 10;
-    }
-
-    /* Dot traveling animation along the timeline */
-    @keyframes travel {
-        0% {
-            top: 0;
-        }
-        100% {
-            top: 100%;
-        }
-    }
-
-    .traveling-dot {
-        animation: travel 30s linear infinite;
-        box-shadow: 0 0 10px rgba(78, 205, 196, 0.8);
-    }
-
-    /* Enhanced glow effect for highlighted dates */
-    @keyframes pulse-glow {
-        0%, 100% {
-            transform: scale(1);
-            box-shadow: 0 0 0 rgba(255, 159, 28, 0.5);
-        }
-        50% {
-            transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(255, 159, 28, 0.8);
-        }
-    }
-
-    .animate-pulse-glow {
-        animation: pulse-glow 2s ease-in-out infinite;
-    }
-
-    @keyframes ping-slow {
-        0%, 100% {
-            transform: scale(1);
-            opacity: 1;
-        }
-        50% {
-            transform: scale(1.8);
-            opacity: 0;
-        }
-    }
-
-    .animate-ping-slow {
-        animation: ping-slow 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
-    }
-
-    /* Enhanced hover effects */
-    .date-badge:hover {
-        transform: translateY(-3px) scale(1.02);
-    }
-
-    .event-card:hover {
-        transform: translateY(-2px);
-    }
-
-	@keyframes pulse-glow-green {
-        0%, 100% {
-            transform: scale(1);
-            box-shadow: 0 0 0 rgba(26, 122, 100, 0.5);
-        }
-        50% {
-            transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(26, 122, 100, 0.8);
-        }
-    }
-
-    .animate-pulse-glow-green {
-        animation: pulse-glow-green 2s ease-in-out infinite;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .date-side, .event-side {
-            width: 100%;
-            text-align: center;
-            margin-bottom: 0.75rem;
-        }
-
-        .timeline-dot {
-            margin: 0.75rem 0;
-        }
-
-        .date-badge {
-            margin: 0 auto;
-            padding: 0.5rem 1rem;
-        }
-
-        .event-card {
-            text-align: center;
-        }
-    }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Mobile view toggle
+    const viewAllBtn = document.querySelector('.view-all-btn');
+    const hideAllBtn = document.querySelector('.hide-all-btn');
+    const timelineWrapper = document.querySelector('.timeline-wrapper');
+    const mobileList = document.querySelector('.mobile-dates-list');
+
+    if (viewAllBtn && hideAllBtn && timelineWrapper && mobileList) {
+      viewAllBtn.addEventListener('click', function() {
+        timelineWrapper.classList.add('hidden');
+        viewAllBtn.classList.add('hidden');
+        mobileList.classList.remove('hidden');
+      });
+
+      hideAllBtn.addEventListener('click', function() {
+        timelineWrapper.classList.remove('hidden');
+        viewAllBtn.classList.remove('hidden');
+        mobileList.classList.add('hidden');
+      });
+    }
+
+    // Scroll to upcoming events
+    const timelineNodes = document.querySelector('.timeline-nodes');
+    if (timelineNodes) {
+      // Find the closest upcoming event
+      const today = new Date().getTime();
+      const nodes = document.querySelectorAll('.timeline-node');
+      let closestUpcoming = null;
+      let closestDiff = Infinity;
+
+      nodes.forEach(node => {
+        const dateText = node.querySelector('.text-sm.font-medium').textContent.trim();
+        const monthYear = dateText.split(' ');
+        // Create a rough date from the text (precision doesn't matter, just need approximate)
+        const nodeDate = new Date(`${monthYear[0]} 1, ${new Date().getFullYear()}`).getTime();
+        const diff = nodeDate - today;
+
+        // Find the event closest to today but in the future
+        if (diff > 0 && diff < closestDiff) {
+          closestDiff = diff;
+          closestUpcoming = node;
+        }
+      });
+
+      // Scroll to the upcoming event or center the timeline
+      setTimeout(() => {
+        if (closestUpcoming) {
+          // Get node position and scroll to it
+          const nodeRect = closestUpcoming.getBoundingClientRect();
+          const containerRect = timelineNodes.getBoundingClientRect();
+          timelineNodes.scrollLeft = closestUpcoming.offsetLeft - containerRect.width / 2 + nodeRect.width / 2;
+        } else {
+          // Default: center the timeline
+          const scrollWidth = timelineNodes.scrollWidth;
+          timelineNodes.scrollLeft = (scrollWidth - timelineNodes.clientWidth) / 2;
+        }
+      }, 300);
+
+      // Basic horizontal scroll with mouse wheel
+      timelineNodes.addEventListener('wheel', function(e) {
+        if (e.deltaY !== 0) {
+          e.preventDefault();
+          this.scrollLeft += e.deltaY;
+        }
+      });
+    }
+  });
+</script>

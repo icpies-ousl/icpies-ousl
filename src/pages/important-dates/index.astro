@@ -1,489 +1,478 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import Container from "@/components/primitives/Container.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
 
-interface DateItem {
-    event: string;
-    date: string;
-    isPassed?: boolean;
-    isHighlighted?: boolean;
-}
-
-// Important conference dates
-const conferenceTitle = "Important Conference Dates";
-const conferenceSubtitle = "Mark your calendar for these key deadlines";
-
-const dates: DateItem[] = [
-    {event: "Call for Abstracts", date: "2025-03-10", isPassed: false, isHighlighted: true},
-    {event: "Deadline for Abstracts Submission", date: "2025-04-04", isPassed: false, isHighlighted: false},
-    {event: "Notification of Acceptance", date: "2025-05-02", isPassed: false},
-    {event: "Deadline for Selected Full Papers Submission", date: "2025-06-06", isPassed: false, isHighlighted: false},
-    {event: "Camera-ready Copy Submission", date: "2025-06-20", isPassed: false, isHighlighted: false},
-    {event: "Early Bird Registration", date: "2025-07-06", isPassed: false, isHighlighted: false},
-    {event: "Registration Deadline", date: "2025-07-18", isPassed: false, isHighlighted: false},
-    {event: "Conference Dates", date: "2025-08-28", isPassed: false, isHighlighted: false}
+// Define your conference dates directly in the page
+const conferenceDates = [
+  {event: "Call for Abstracts", date: "2025-03-15", isPassed: false, isHighlighted: true},
+  {event: "Deadline for Abstracts Submission", date: "2025-04-04", isPassed: false, isHighlighted: false},
+  {event: "Notification of Acceptance", date: "2025-05-02", isPassed: false},
+  {event: "Deadline for Selected Full Papers Submission", date: "2025-06-06", isPassed: false, isHighlighted: false},
+  {event: "Camera-ready Copy Submission", date: "2025-06-20", isPassed: false, isHighlighted: false},
+  {event: "Early Bird Registration", date: "2025-07-06", isPassed: false, isHighlighted: false},
+  {event: "Registration Deadline", date: "2025-07-18", isPassed: false, isHighlighted: false},
 ];
 
 // Helper to check if a date has passed
 const isDatePassed = (dateStr: string) => {
-    const today = new Date();
-    const itemDate = new Date(dateStr);
-    return today > itemDate;
+  const today = new Date();
+  const itemDate = new Date(dateStr);
+  return today > itemDate;
 };
 
 // Process dates and add status
-const processedDates = dates.map(date => ({
-    ...date,
-    isPassed: date.isPassed !== undefined ? date.isPassed : isDatePassed(date.date)
+const processedDates = conferenceDates.map(date => ({
+  ...date,
+  isPassed: date.isPassed !== undefined ? date.isPassed : isDatePassed(date.date)
 }));
 
-// Group dates by month for visual organization
-const groupedDates = processedDates.reduce((acc, date) => {
-    const month = new Date(date.date).toLocaleString('default', { month: 'long', year: 'numeric' });
-    if (!acc[month]) {
-        acc[month] = [];
-    }
-    acc[month].push(date);
-    return acc;
-}, {} as Record<string, DateItem[]>);
+// Sort dates chronologically
+const sortedDates = [...processedDates].sort((a, b) => {
+  return new Date(a.date).getTime() - new Date(b.date).getTime();
+});
 
-// Format date for display (10th March 2025 format)
+// Format date for display
 const formatDateWithSuffix = (dateStr: string) => {
+  try {
     const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return dateStr;
+
     const day = date.getDate();
+    const suffix = day % 10 === 1 && day !== 11 ? 'st' : day % 10 === 2 && day !== 12 ? 'nd' : day % 10 === 3 && day !== 13 ? 'rd' : 'th';
+    return date.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }).replace(/\d+/, day + suffix);
+  } catch (e) {
+    console.error("Error formatting date:", e);
+    return dateStr;
+  }
+};
 
-    // Add suffix to day (st, nd, rd, th)
-    const suffix =
-        day % 10 === 1 && day !== 11 ? 'st' :
-        day % 10 === 2 && day !== 12 ? 'nd' :
-        day % 10 === 3 && day !== 13 ? 'rd' : 'th';
+// Format short date
+const formatShortDate = (dateStr: string) => {
+  try {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return dateStr;
+    return date.toLocaleDateString('en-US', { day: '2-digit', month: 'short' });
+  } catch (e) {
+    console.error("Error formatting short date:", e);
+    return dateStr;
+  }
+};
 
-    return date.toLocaleDateString('en-US', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-    }).replace(/\d+/, day + suffix);
+// Get event type based on event name
+const getEventType = (eventName: string) => {
+  if (!eventName) return "standard";
+  if (eventName.includes("Camera-ready") || eventName.includes("Early Bird") || eventName.includes("Registration")) {
+    return "physical";
+  }
+  return "standard";
+};
+
+// Calculate progress percentage
+const calculateProgress = () => {
+  if (sortedDates.length <= 1) return 100;
+  const firstDate = new Date(sortedDates[0].date).getTime();
+  const lastDate = new Date(sortedDates[sortedDates.length - 1].date).getTime();
+  const today = new Date().getTime();
+  if (today <= firstDate) return 0;
+  if (today >= lastDate) return 100;
+  return Math.floor(((today - firstDate) / (lastDate - firstDate)) * 100);
+};
+
+const progressPercentage = calculateProgress();
+
+// Find today's closest event
+const findCurrentEventIndex = () => {
+  const today = new Date().getTime();
+  for (let i = 0; i < sortedDates.length; i++) {
+    if (new Date(sortedDates[i].date).getTime() > today) {
+      return i === 0 ? 0 : i - 1;
+    }
+  }
+  return sortedDates.length - 1;
+};
+
+const currentEventIndex = findCurrentEventIndex();
+
+// If there are no dates, we'll show a placeholder message
+const hasData = sortedDates.length > 0;
+
+// SEO props for the page
+const seo = {
+  title: "Important Dates | ICPIES Conference",
+  description: "Important dates and deadlines for ICPIES 2025 conference submissions and registration."
 };
 ---
 
-<BaseLayout
-    title="Important Dates | ICPIES 2025"
-    description="Check all the important dates and deadlines for the International Conference on Plastics, Innovations, and Environmental Sustainability (ICPIES) 2025."
->
-    <section class="py-32 bg-gradient-to-b from-[#1A7A64]/5 to-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl md:text-5xl font-bold text-[#2C3E50] mb-6">
-                Important Dates
-            </h1>
-            <p class="text-xl text-[#2C3E50]/80 max-w-3xl mx-auto">
-                Make sure to mark these key dates on your calendar for ICPIES 2025 submissions and events
-            </p>
-            <div class="w-32 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-10"></div>
-        </div>
-    </section>
+<BaseLayout seo={seo}>
+  <main class="py-16 md:py-24">
+    <div class="max-w-5xl mx-auto px-4">
+      <h1 class="text-3xl md:text-4xl font-bold text-center mb-6">Important Conference Dates</h1>
+      <p class="text-lg text-center text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto">
+        Mark your calendar for these key deadlines to ensure you don't miss any important submission dates.
+      </p>
 
-    <Container>
-        <div class="py-20 bg-[#F7F7F7] rounded-xl border-l-4 border-[#1A7A64] shadow-md" id="important-dates">
-            <div class="max-w-5xl mx-auto px-4">
-                <div class="text-center mb-12">
-                    <h2 class="text-[2.13rem] leading-9 font-semibold mb-6 text-[#2C3E50]">{conferenceTitle}</h2>
-                    <div class="w-32 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-6"></div>
-                    <p class="text-xl text-[#2C3E50]/80 mt-6 max-w-3xl mx-auto">
-                        {conferenceSubtitle}
-                    </p>
+      <section class="timeline-section py-6 px-4 bg-white dark:bg-gray-900 rounded-xl shadow-sm" id="important-dates">
+        <div class="max-w-5xl mx-auto">
+          {hasData ? (
+            <>
+              <!-- Status indicators -->
+              <div class="flex justify-center gap-4 mb-4 text-xs">
+                <div class="flex items-center gap-1.5">
+                  <div class="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+                  <span class="text-gray-600 dark:text-gray-400">Past</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
+                  <span class="text-gray-600 dark:text-gray-400">Current</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <div class="w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                  <span class="text-gray-600 dark:text-gray-400">Upcoming</span>
+                </div>
+              </div>
+
+              <!-- Improved horizontal timeline -->
+              <div class="timeline-container relative mt-8 mb-4">
+                <!-- Progress bar track -->
+                <div class="absolute w-full h-1 top-2.5 bg-gray-200 dark:bg-gray-700 z-0 rounded-full overflow-hidden">
+                  <div class="h-full bg-indigo-500 dark:bg-indigo-400 transition-all duration-500" style={`width: ${progressPercentage}%`}></div>
                 </div>
 
-                <div class="timeline-container relative">
-                    <!-- Timeline line with animated dots -->
-                    <div class="absolute left-1/2 transform -translate-x-1/2 h-full">
-                        <div class="relative h-full">
-                            <!-- Main line -->
-                            <div class="absolute inset-0 w-1 bg-gradient-to-b from-[#1A7A64] to-[#0D3B66] rounded"></div>
+                <!-- Timeline markers and events -->
+                <div class="timeline-scroll relative flex overflow-x-auto hide-scrollbar py-1 px-2 pb-6 snap-x snap-mandatory" id="timeline-scroll">
+                  {sortedDates.map((dateItem, index) => {
+                    const eventType = getEventType(dateItem.event);
+                    const isHighlighted = dateItem.isHighlighted;
+                    const isPassed = dateItem.isPassed;
+                    const isCurrent = index === currentEventIndex && !isPassed;
 
-                            <!-- Animated traveling dot -->
-                            <div class="absolute w-3 h-3 bg-[#4ECDC4] rounded-full left-1/2 transform -translate-x-1/2 traveling-dot"></div>
+                    // Calculate event width - important events get more space
+                    const baseWidth = isHighlighted ? 120 : 100;
+
+                    return (
+                      <div class={`timeline-node relative mx-1.5 first:ml-0 last:mr-0 snap-center`} style={`min-width: ${baseWidth}px; max-width: ${baseWidth}px;`}>
+                        <!-- Marker dot -->
+                        <div class={`absolute left-1/2 top-2.5 w-5 h-5 rounded-full z-10 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center
+                          ${isPassed
+                            ? 'bg-gray-300 dark:bg-gray-600'
+                            : isCurrent
+                              ? 'bg-amber-500 dark:bg-amber-400 ring-4 ring-amber-100 dark:ring-amber-900/30'
+                              : 'bg-indigo-500 dark:bg-indigo-400'
+                          }`}>
+                          {isCurrent && (
+                            <div class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-amber-400 opacity-75"></div>
+                          )}
                         </div>
-                    </div>
 
-                    <!-- Timeline content -->
-                    <div class="relative z-10">
-                        {Object.entries(groupedDates).map(([month, monthDates], monthIndex) => (
-                            <div class="mb-14">
-                                <div class="flex justify-center">
-                                    <div class="month-marker py-2 px-8 bg-gradient-to-r from-[#1A7A64] to-[#0D3B66] text-white rounded-full shadow-lg text-sm font-semibold mb-8 transform hover:scale-105 transition-transform duration-300">
-                                        <span class="tracking-wider">{month}</span>
-                                    </div>
-                                </div>
+                        <!-- Date label -->
+                        <div class="text-center mt-8 mb-1">
+                          <span class={`text-xs font-semibold uppercase tracking-wide ${
+                            isPassed
+                              ? 'text-gray-500 dark:text-gray-400'
+                              : isCurrent
+                                ? 'text-amber-600 dark:text-amber-400'
+                                : 'text-indigo-600 dark:text-indigo-400'
+                          }`}>
+                            {formatShortDate(dateItem.date)}
+                          </span>
+                        </div>
 
-                                <div class="space-y-10">
-                                    {monthDates.map((dateItem, index) => {
-                                        // Calculate global index across all months to maintain consistent alternation
-                                        let globalIndex = monthIndex * 10 + index;
+                        <!-- Event card -->
+                        <div class={`mt-1 p-2 rounded-lg shadow-sm border border-l-2 transition-transform hover:translate-y-[-2px] ${
+                          isPassed
+                            ? 'bg-white dark:bg-gray-800/50 border-l-gray-300 dark:border-l-gray-600 border-gray-200 dark:border-gray-700'
+                            : isCurrent
+                              ? 'bg-white dark:bg-gray-800/70 border-l-amber-400 dark:border-l-amber-500 border-amber-200 dark:border-amber-800/50 shadow-md'
+                              : 'bg-white dark:bg-gray-800/50 border-l-indigo-400 dark:border-l-indigo-500 border-indigo-200 dark:border-indigo-800/50'
+                          }`}
+                        >
+                          <h3 class={`text-xs font-medium leading-tight ${
+                            isPassed
+                              ? 'text-gray-500 dark:text-gray-400'
+                              : isCurrent
+                                ? 'text-amber-700 dark:text-amber-300'
+                                : 'text-indigo-700 dark:text-indigo-300'
+                          }`}>
+                            {dateItem.event}
+                          </h3>
+                          <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1 truncate" title={formatDateWithSuffix(dateItem.date)}>
+                            {formatDateWithSuffix(dateItem.date)}
+                          </p>
 
-                                        // Check if this is one of the last three conference events
-                                        const isPhysicalEvent =
-                                            dateItem.event.includes("Camera-ready") ||
-                                            dateItem.event.includes("Early Bird") ||
-                                            dateItem.event.includes("Registration Deadline") ||
-                                            dateItem.event.includes("Conference");
-
-                                        return (
-                                            <div class={`date-item flex flex-col md:flex-row items-center ${globalIndex % 2 === 0 ? 'md:flex-row-reverse' : ''} ${(dateItem.isHighlighted || isPhysicalEvent) ? 'highlighted-item' : ''}`}>
-                                                <!-- Date -->
-                                                <div class="date-side w-full md:w-1/2 px-4 flex md:justify-end">
-                                                    <div class={`date-badge px-5 py-3 rounded-xl shadow-md ${
-                                                        dateItem.isPassed
-                                                            ? 'bg-[#2C3E50]/10 text-[#2C3E50]/60'
-                                                            : isPhysicalEvent
-                                                                ? 'bg-gradient-to-br from-[#4ECDC4] to-[#1A7A64] text-white border-2 border-[#4ECDC4]'
-                                                                : dateItem.isHighlighted
-                                                                    ? 'bg-gradient-to-br from-[#FF9F1C] to-[#FF8C00] text-white border-2 border-[#FF9F1C]'
-                                                                    : 'bg-gradient-to-br from-[#4ECDC4] to-[#1A7A64] text-white'
-                                                    } inline-block transform transition-all duration-300 hover:shadow-xl`}>
-                                                        <div class="flex items-center justify-center">
-                                                            <div class="text-center">
-                                                                <span class="text-xl font-bold block">{new Date(dateItem.date).toLocaleDateString('default', { day: '2-digit' })}</span>
-                                                                <span class="text-xs tracking-wide uppercase opacity-80">{new Date(dateItem.date).toLocaleDateString('default', { month: 'short' })}</span>
-                                                            </div>
-                                                            {(dateItem.isHighlighted || isPhysicalEvent) && (
-                                                                <div class={`ml-2 w-2 h-2 rounded-full ${isPhysicalEvent ? 'bg-[#1A7A64] animate-ping-slow' : 'bg-white animate-ping-slow'}`}></div>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Timeline dot -->
-                                                <div class="timeline-dot relative">
-                                                    <div class={`timeline-point absolute left-1/2 transform -translate-x-1/2 rounded-full ${
-                                                        dateItem.isPassed
-                                                            ? 'w-4 h-4 bg-[#2C3E50]/30 border-4 border-[#2C3E50]/20'
-                                                            : isPhysicalEvent
-                                                                ? 'w-6 h-6 bg-[#1A7A64] border-[3px] border-[#4ECDC4]/70 animate-pulse-glow-green'
-                                                                : dateItem.isHighlighted
-                                                                    ? 'w-6 h-6 bg-[#FF9F1C] border-[3px] border-[#FF9F1C]/30 animate-pulse-glow'
-                                                                    : 'w-5 h-5 bg-[#1A7A64] border-4 border-[#4ECDC4]/30'
-                                                    }`}></div>
-                                                </div>
-
-                                                <!-- Event -->
-                                                <div class="event-side w-full md:w-1/2 px-4">
-                                                    <div class={`event-card p-6 rounded-xl transition-all duration-300 ${
-                                                        dateItem.isPassed
-                                                            ? 'bg-white/50 border border-[#2C3E50]/10'
-                                                            : isPhysicalEvent
-                                                                ? 'bg-white shadow-lg hover:shadow-xl border-l-4 border-[#1A7A64]'
-                                                                : dateItem.isHighlighted
-                                                                    ? 'bg-white shadow-lg hover:shadow-xl border-l-4 border-[#FF9F1C]'
-                                                                    : 'bg-white shadow-md hover:shadow-lg'
-                                                    }`}>
-                                                        <h3 class={`font-bold text-xl ${
-                                                            dateItem.isPassed
-                                                                ? 'text-[#2C3E50]/60'
-                                                                : isPhysicalEvent
-                                                                    ? 'text-[#1A7A64]'
-                                                                    : dateItem.isHighlighted
-                                                                        ? 'text-[#FF9F1C]'
-                                                                        : 'text-[#1A7A64]'
-                                                        }`}>
-                                                            {dateItem.event}
-                                                        </h3>
-                                                        <p class={`mt-2 ${
-                                                            dateItem.isPassed
-                                                                ? 'text-[#2C3E50]/40'
-                                                                : 'text-[#2C3E50]/70'
-                                                        }`}>
-                                                            {formatDateWithSuffix(dateItem.date)}
-                                                        </p>
-
-                                                        {!dateItem.isPassed && (
-                                                            <>
-                                                                {dateItem.event === "Conference Dates" && (
-                                                                    <div class="mt-3 inline-block px-3 py-1 bg-[#1A7A64]/10 text-[#1A7A64] text-xs font-semibold rounded-full">
-                                                                        3-Day Event • Hybrid Conference
-                                                                    </div>
-                                                                )}
-
-                                                                {isPhysicalEvent && dateItem.event !== "Conference Dates" && (
-                                                                    <div class="mt-3 inline-block px-3 py-1 bg-[#1A7A64]/10 text-[#1A7A64] text-xs font-semibold rounded-full">
-                                                                        Important Deadline
-                                                                    </div>
-                                                                )}
-
-                                                                {dateItem.isHighlighted && !isPhysicalEvent && (
-                                                                    <div class="mt-3 inline-block px-3 py-1 bg-[#FF9F1C]/10 text-[#FF9F1C] text-xs font-semibold rounded-full">
-                                                                        Current Focus
-                                                                    </div>
-                                                                )}
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
+                          {!isPassed && eventType === "physical" && (
+                            <div class="mt-1.5">
+                              <span class="inline-block px-1.5 py-0.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300 text-[8px] font-medium rounded-full">
+                                Event
+                              </span>
                             </div>
-                        ))}
-                    </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
 
-                <!-- Enhanced Legend -->
-                <div class="mt-16 flex flex-wrap justify-center gap-8 text-sm">
-                    <div class="legend-item flex items-center gap-3 bg-white/80 px-4 py-2 rounded-lg shadow-sm">
-                        <div class="w-4 h-4 rounded-full bg-[#1A7A64] border-4 border-[#4ECDC4]/30"></div>
-                        <span class="text-[#2C3E50]">Upcoming Deadlines</span>
+                <!-- Elegant scroll indicators -->
+                <div class="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white dark:from-gray-900 to-transparent pointer-events-none z-10"></div>
+                <div class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white dark:from-gray-900 to-transparent pointer-events-none z-10"></div>
+
+                <!-- Scroll buttons -->
+                <button id="scroll-left" class="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-6 h-6 flex items-center justify-center rounded-full bg-white dark:bg-gray-800 shadow-md text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                </button>
+                <button id="scroll-right" class="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-6 h-6 flex items-center justify-center rounded-full bg-white dark:bg-gray-800 shadow-md text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Mobile view toggle -->
+              <div class="md:hidden text-center mt-4">
+                <button class="view-all-btn px-3 py-1.5 text-xs bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                  View All Dates
+                </button>
+              </div>
+
+              <!-- Mobile list view -->
+              <div class="md:hidden mobile-dates-list mt-4 hidden space-y-2">
+                {sortedDates.map((dateItem, index) => {
+                  const eventType = getEventType(dateItem.event);
+                  const isHighlighted = dateItem.isHighlighted;
+                  const isPassed = dateItem.isPassed;
+                  const isCurrent = index === currentEventIndex && !isPassed;
+
+                  return (
+                    <div class={`p-2.5 border rounded-lg shadow-sm ${
+                      isPassed
+                        ? 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50'
+                        : isCurrent
+                          ? 'border-l-2 border-l-amber-400 dark:border-l-amber-500 border-amber-200 dark:border-amber-800/50 bg-white dark:bg-gray-800/70'
+                          : 'border-l-2 border-l-indigo-400 dark:border-l-indigo-500 border-indigo-200 dark:border-indigo-800/50 bg-white dark:bg-gray-800/50'
+                    }`}>
+                      <div class="flex justify-between items-center">
+                        <div>
+                          <h3 class={`text-sm font-medium ${
+                            isPassed
+                              ? 'text-gray-500 dark:text-gray-400'
+                              : isCurrent
+                                ? 'text-amber-700 dark:text-amber-300'
+                                : 'text-indigo-700 dark:text-indigo-300'
+                          }`}>
+                            {dateItem.event}
+                          </h3>
+                          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                            {formatDateWithSuffix(dateItem.date)}
+                          </p>
+                        </div>
+                        <div class={`flex-shrink-0 ml-2 w-10 h-10 rounded-full flex items-center justify-center ${
+                          isPassed
+                            ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
+                            : isCurrent
+                              ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
+                              : 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300'
+                        }`}>
+                          <div class="text-center">
+                            <span class="text-sm font-bold">{new Date(dateItem.date).getDate()}</span>
+                            <span class="block text-[8px] uppercase font-medium">{new Date(dateItem.date).toLocaleDateString('en-US', { month: 'short' })}</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div class="legend-item flex items-center gap-3 bg-white/80 px-4 py-2 rounded-lg shadow-sm">
-                        <div class="w-4 h-4 rounded-full bg-[#FF9F1C] border-4 border-[#FF9F1C]/30 animate-pulse-glow"></div>
-                        <span class="text-[#2C3E50]">Current Focus</span>
-                    </div>
-                    <div class="legend-item flex items-center gap-3 bg-white/80 px-4 py-2 rounded-lg shadow-sm">
-                        <div class="w-4 h-4 rounded-full bg-[#2C3E50]/30 border-4 border-[#2C3E50]/20"></div>
-                        <span class="text-[#2C3E50]">Past Deadlines</span>
-                    </div>
+                  );
+                })}
+
+                <div class="text-center mt-4">
+                  <button class="hide-all-btn px-3 py-1.5 text-xs bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                    Back to Timeline
+                  </button>
                 </div>
+              </div>
+
+              <!-- Current status indicator -->
+              <div class="flex items-center justify-center mt-6 text-sm">
+                <div class="relative">
+                  <div class="flex items-center space-x-1">
+                    <div class={`w-2 h-2 rounded-full animate-pulse ${sortedDates[currentEventIndex]?.isPassed ? 'bg-gray-400' : 'bg-amber-500'}`}></div>
+                    <span class="text-gray-600 dark:text-gray-300">
+                      {sortedDates[currentEventIndex]?.isPassed
+                        ? "Next deadline:"
+                        : "Current phase:"}
+                    </span>
+                    <span class={`font-medium ${sortedDates[currentEventIndex]?.isPassed
+                      ? 'text-indigo-600 dark:text-indigo-400'
+                      : 'text-amber-600 dark:text-amber-400'}`}>
+                      {sortedDates[currentEventIndex]?.event || "All dates passed"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <!-- No data placeholder -->
+            <div class="text-center py-6">
+              <p class="text-sm text-gray-500 dark:text-gray-400">No dates available yet. Check back soon!</p>
             </div>
+          )}
         </div>
-<!-- Additional Information Section with Enhanced Background -->
-<div class="py-16 my-8 relative overflow-hidden rounded-xl border border-gray-100 shadow-md group">
-  <!-- Background layers -->
-  <div class="absolute inset-0 bg-gradient-to-br from-white via-[#F0F9F7] to-[#F5F9FA] transform transition-transform duration-700 group-hover:scale-105"></div>
+      </section>
 
-  <!-- Decorative patterns -->
-  <div class="absolute inset-0 bg-pattern opacity-5"></div>
+      <!-- Clean grid for all dates -->
+      <section class="mt-12">
+        <h2 class="text-xl font-semibold text-center mb-6">All Conference Dates</h2>
+        <div class="max-w-3xl mx-auto">
+          <div class="grid gap-3 sm:grid-cols-2">
+            {sortedDates.map((dateItem, index) => {
+              const isHighlighted = dateItem.isHighlighted;
+              const isPassed = dateItem.isPassed;
+              const isCurrent = index === currentEventIndex && !isPassed;
 
-  <!-- Background accent elements -->
-  <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-gradient-to-br from-[#1A7A64]/10 to-[#4ECDC4]/5 blur-3xl"></div>
-  <div class="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-gradient-to-tr from-[#0D3B66]/5 to-[#4ECDC4]/10 blur-3xl"></div>
-
-  <!-- Wave decoration -->
-  <div class="absolute top-0 left-0 right-0 h-8 wave-pattern-top opacity-30"></div>
-  <div class="absolute bottom-0 left-0 right-0 h-8 wave-pattern-bottom opacity-30"></div>
-
-  <!-- Animated dots -->
-  <div class="absolute top-1/4 left-8 w-3 h-3 rounded-full bg-[#1A7A64]/30 animate-float-slow"></div>
-  <div class="absolute top-3/4 right-10 w-2 h-2 rounded-full bg-[#4ECDC4]/40 animate-float-slow animation-delay-1000"></div>
-  <div class="absolute bottom-1/4 left-1/4 w-4 h-4 rounded-full bg-[#FF9F1C]/20 animate-float-slow animation-delay-2000"></div>
-
-  <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
-    <div class="info-header relative inline-block mb-8">
-      <h2 class="text-2xl md:text-3xl font-semibold text-[#2C3E50]">Additional Information</h2>
-      <div class="w-32 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mt-4"></div>
-    </div>
-
-    <div class="grid md:grid-cols-1 gap-8 mt-10">
-      <div class="bg-white p-8 rounded-xl border-t-4 border-[#1A7A64] shadow-md hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1">
-        <div class="flex flex-col items-center md:flex-row md:items-start md:text-left">
-          <div class="icon-wrapper mb-4 md:mb-0 md:mr-6 p-4 bg-[#1A7A64]/10 rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#1A7A64]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          </div>
-          <div class="content-wrapper flex-1">
-            <h3 class="text-xl font-semibold mb-4 text-[#2C3E50]">Submission Guidelines</h3>
-            <p class="text-[#2C3E50]/80 mb-4">
-              All abstracts and full papers must be submitted through our online submission system. Please ensure you follow the formatting guidelines.
-            </p>
-            <a href="/submissions" class="inline-flex items-center text-[#1A7A64] hover:text-[#4ECDC4] transition-colors duration-300 group">
-              <span class="group-hover:underline">View guidelines</span>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
+              return (
+                <div class={`p-3 rounded-lg border ${
+                  isPassed
+                    ? 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'
+                    : isCurrent
+                      ? 'border-amber-200 dark:border-amber-700 bg-amber-50/50 dark:bg-amber-900/10'
+                      : 'border-indigo-200 dark:border-indigo-700 bg-indigo-50/50 dark:bg-indigo-900/10'
+                }`}>
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <h3 class="font-medium">{dateItem.event}</h3>
+                      <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">{formatDateWithSuffix(dateItem.date)}</p>
+                    </div>
+                    <div class={`px-2 py-1 rounded text-xs font-medium ${
+                      isPassed
+                        ? 'text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700'
+                        : isCurrent
+                          ? 'text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/20'
+                          : 'text-indigo-700 dark:text-indigo-300 bg-indigo-100 dark:bg-indigo-900/20'
+                    }`}>
+                      {isPassed ? 'Past' : isCurrent ? 'Current' : 'Upcoming'}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
-      </div>
-
-
+      </section>
     </div>
+  </main>
+</BaseLayout>
 
-    <div class="mt-12 relative group">
-      <div class="absolute inset-0 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-xl opacity-5 group-hover:opacity-10 transition-opacity duration-500"></div>
-      <div class="p-8 bg-gradient-to-br from-white to-[#F0F9F7] rounded-xl border border-[#1A7A64]/10 shadow-md relative overflow-hidden group-hover:shadow-lg transition-all duration-500">
-        <div class="absolute right-0 top-0 w-32 h-32 bg-gradient-to-bl from-[#1A7A64]/10 to-transparent rounded-bl-full"></div>
-
-        <div class="flex flex-col items-center text-center md:flex-row md:items-start md:text-left">
-          <div class="icon-wrapper mb-4 md:mb-0 md:mr-6 p-4 bg-[#1A7A64] rounded-full text-white shadow-md">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-          </div>
-          <div class="content-wrapper flex-1">
-            <h3 class="text-2xl font-semibold mb-4 text-[#2C3E50]">Need Help?</h3>
-            <p class="text-[#2C3E50]/80 mb-6">
-              If you have any questions about deadlines, submissions, or require an extension, please contact our conference secretariat.
-            </p>
-            <a href="/contact-us" class="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-[#1A7A64] to-[#156954] text-white font-medium rounded-lg transition-all duration-300 hover:from-[#156954] hover:to-[#1A7A64] transform hover:-translate-y-1 hover:shadow-lg">
-              Contact Us
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-</Container>
-
-    <style>
-        .timeline-container {
-            padding: 2rem 0;
-        }
-
-        .date-item {
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        .timeline-dot {
-            min-width: 30px;
-            min-height: 30px;
-            margin: 1rem 0;
-        }
-
-        .highlighted-item {
-            z-index: 10;
-        }
-
-        /* Dot traveling animation along the timeline */
-        @keyframes travel {
-            0% {
-                top: 0;
-            }
-            100% {
-                top: 100%;
-            }
-        }
-
-        .traveling-dot {
-            animation: travel 30s linear infinite;
-            box-shadow: 0 0 10px rgba(78, 205, 196, 0.8);
-        }
-
-        /* Enhanced glow effect for highlighted dates */
-        @keyframes pulse-glow {
-            0%, 100% {
-                transform: scale(1);
-                box-shadow: 0 0 0 rgba(255, 159, 28, 0.5);
-            }
-            50% {
-                transform: scale(1.1);
-                box-shadow: 0 0 15px rgba(255, 159, 28, 0.8);
-            }
-        }
-
-        .animate-pulse-glow {
-            animation: pulse-glow 2s ease-in-out infinite;
-        }
-
-        @keyframes ping-slow {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.8);
-                opacity: 0;
-            }
-        }
-
-        .animate-ping-slow {
-            animation: ping-slow 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
-        }
-
-        /* Enhanced hover effects */
-        .date-badge:hover {
-            transform: translateY(-3px) scale(1.02);
-        }
-
-        .event-card:hover {
-            transform: translateY(-2px);
-        }
-
-        @keyframes pulse-glow-green {
-            0%, 100% {
-                transform: scale(1);
-                box-shadow: 0 0 0 rgba(26, 122, 100, 0.5);
-            }
-            50% {
-                transform: scale(1.1);
-                box-shadow: 0 0 15px rgba(26, 122, 100, 0.8);
-            }
-        }
-
-        .animate-pulse-glow-green {
-            animation: pulse-glow-green 2s ease-in-out infinite;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .date-side, .event-side {
-                width: 100%;
-                text-align: center;
-                margin-bottom: 0.75rem;
-            }
-
-            .timeline-dot {
-                margin: 0.75rem 0;
-            }
-
-            .date-badge {
-                margin: 0 auto;
-                padding: 0.5rem 1rem;
-            }
-
-            .event-card {
-                text-align: center;
-            }
-        }
-		.bg-pattern {
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231A7A64' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    background-size: 100px 100px;
+<style>
+  /* Hide scrollbar but keep functionality */
+  .hide-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
   }
 
-  /* Wave patterns */
-  .wave-pattern-top {
-    background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='24px' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0C100 0 100 12 200 12C300 12 300 0 400 0V24H0V0Z' fill='%231A7A64'/%3E%3C/svg%3E");
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
   }
 
-  .wave-pattern-bottom {
-    background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='24px' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 24C100 24 100 12 200 12C300 12 300 24 400 24V0H0V24Z' fill='%231A7A64'/%3E%3C/svg%3E");
+  /* Smooth transitions */
+  .timeline-node {
+    transition: all 0.2s ease-in-out;
   }
 
-		@keyframes float-slow {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    25% { transform: translate(5px, 10px) rotate(5deg); }
-    50% { transform: translate(10px, 5px) rotate(0deg); }
-    75% { transform: translate(5px, -5px) rotate(-5deg); }
-  }
-
-  .animate-float-slow {
-    animation: float-slow 15s ease-in-out infinite;
-  }
-
-		.animation-delay-1000 {
-    animation-delay: 5s;
-  }
-
-  .animation-delay-2000 {
-    animation-delay: 10s;
-  }
-
-  /* Hover effects */
-  .info-header {
-    transition: transform 0.3s ease;
-  }
-		.info-header:hover {
-    transform: translateY(-2px);
-  }
-
+  /* Snap scrolling for mobile */
   @media (max-width: 768px) {
-    .icon-wrapper {
-      margin-right: 0;
+    .timeline-scroll {
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+    }
+
+    .timeline-node {
+      scroll-snap-align: center;
     }
   }
-    </style>
-</Base>
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // DOM Elements
+    const timelineScroll = document.getElementById('timeline-scroll');
+    const scrollLeftBtn = document.getElementById('scroll-left');
+    const scrollRightBtn = document.getElementById('scroll-right');
+    const viewAllBtn = document.querySelector('.view-all-btn');
+    const hideAllBtn = document.querySelector('.hide-all-btn');
+    const timelineContainer = document.querySelector('.timeline-container');
+    const mobileList = document.querySelector('.mobile-dates-list');
+
+    // Scroll control functions
+    if (scrollLeftBtn && scrollRightBtn && timelineScroll) {
+      // Calculate scroll amount (approximately one event)
+      const scrollAmount = 110; // Base width + margins
+
+      scrollLeftBtn.addEventListener('click', () => {
+        timelineScroll.scrollBy({
+          left: -scrollAmount,
+          behavior: 'smooth'
+        });
+      });
+
+      scrollRightBtn.addEventListener('click', () => {
+        timelineScroll.scrollBy({
+          left: scrollAmount,
+          behavior: 'smooth'
+        });
+      });
+    }
+
+    // Mobile view toggle
+    if (viewAllBtn && hideAllBtn && timelineContainer && mobileList) {
+      viewAllBtn.addEventListener('click', function() {
+        timelineContainer.classList.add('hidden');
+        viewAllBtn.classList.add('hidden');
+        mobileList.classList.remove('hidden');
+      });
+
+      hideAllBtn.addEventListener('click', function() {
+        timelineContainer.classList.remove('hidden');
+        viewAllBtn.classList.remove('hidden');
+        mobileList.classList.add('hidden');
+      });
+    }
+
+    // Scroll to current event
+    if (timelineScroll) {
+      setTimeout(() => {
+        try {
+          // Find the current event (with amber marker)
+          const currentEvent = timelineScroll.querySelector('.bg-amber-500') ||
+                              timelineScroll.querySelector('.bg-amber-400');
+
+          if (currentEvent) {
+            // Find the parent node
+            const currentNode = currentEvent.closest('.timeline-node');
+            if (currentNode) {
+              // Calculate the scroll position to center this node
+              const nodeRect = currentNode.getBoundingClientRect();
+              const containerRect = timelineScroll.getBoundingClientRect();
+              const centerPosition = currentNode.offsetLeft - containerRect.width / 2 + nodeRect.width / 2;
+
+              // Smooth scroll to that position
+              timelineScroll.scrollTo({
+                left: centerPosition,
+                behavior: 'smooth'
+              });
+            }
+          }
+        } catch (e) {
+          console.error("Error scrolling timeline:", e);
+        }
+      }, 300);
+
+      // Enable horizontal scroll with mouse wheel
+      timelineScroll.addEventListener('wheel', function(e) {
+        if (e.deltaY !== 0) {
+          e.preventDefault();
+          this.scrollLeft += e.deltaY;
+        }
+      });
+    }
+  });
+</script>
+
