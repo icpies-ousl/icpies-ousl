@@ -31,7 +31,7 @@ const quickLinks = [
   { title: "Important Dates", url: "/important-dates" },
   { title: "Call for Papers", url: "/submissions" },
   { title: "Registration", url: "/registration" },
-  { title: "Conference Tracks", url: "/tracks" },
+  { title: "Conference Tracks", url: "/conference-tracks" },
   { title: "Committee", url: "/organizing-committee" },
 ];
 
@@ -39,7 +39,7 @@ const quickLinks = [
 const resourceLinks = [
   { title: "Submission Guidelines", url: "/submissions" },
   { title: "Templates", url: "/templates" },
-  { title: "Program Schedule", url: "/program" },
+  { title: "Timeline", url: "/important-dates" },
   { title: "FAQs", url: "/faq" },
 ];
 
@@ -69,19 +69,13 @@ const currentYear = new Date().getFullYear();
         </p>
         <div class="flex flex-wrap justify-center gap-4">
           <Link
-            href="/contact"
+            href="/submissions"
             style="buttonLight"
             icon="iconamoon:arrow-top-right-1-thin"
           >
-            Register Interest
-          </Link>
-          <Link
-            href="/submissions"
-            style="outline"
-            class="text-white border-white hover:bg-white/10"
-          >
-            Submit Paper
-          </Link>
+		  Submit Paper
+		</Link>
+
         </div>
       </div>
     </Container>

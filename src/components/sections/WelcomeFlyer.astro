@@ -14,44 +14,54 @@ const {
   title = "Join Us at ICPIES 2025",
   subtitle = "Be part of the global conversation on plastic innovation and environmental sustainability",
   ctaText = "Register Now",
-  ctaLink = "/contact"
+  ctaLink = "/submissions"
 } = Astro.props;
 ---
 
-<div class="welcome-flyer-section py-24 rounded-lg relative overflow-hidden">
+<div class="welcome-flyer-section py-32 rounded-lg relative overflow-hidden">
+  <!-- Enhanced background theme with layered patterns -->
+  <div class="absolute inset-0 bg-gradient-to-br from-[#F7F7F7] via-white to-[#F0F9F7] opacity-80"></div>
+  <div class="absolute inset-0 bg-pattern opacity-10"></div>
+
   <!-- Animated background elements -->
   <div class="animated-bg-element"></div>
   <div class="animated-bg-element delay-2"></div>
   <div class="animated-bg-element delay-4"></div>
 
+  <!-- Subtle wave patterns -->
+  <div class="absolute top-0 left-0 right-0 wave-pattern"></div>
+  <div class="absolute bottom-0 left-0 right-0 wave-pattern-bottom"></div>
+
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
     <div class="text-center mb-12 reveal-text">
-      <h2 class="text-4xl font-bold text-[#2C3E50] mb-4">{title}</h2>
-      <div class="w-32 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-6"></div>
-      <p class="text-xl text-[#2C3E50]/80 max-w-2xl mx-auto">{subtitle}</p>
+      <h2 class="text-5xl font-bold text-[#2C3E50] mb-4">{title}</h2>
+      <div class="w-48 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-6"></div>
+      <p class="text-xl text-[#2C3E50]/80 max-w-3xl mx-auto">{subtitle}</p>
     </div>
 
     <div class="flex justify-center">
       <div class="flyer-container reveal-image">
         <div class="flyer-border"></div>
-        <div class="flyer-image-wrapper">
-          <Image
-            src={FlyerImage}
-            alt="ICPIES 2025 Conference Flyer"
-            class="flyer-image"
-            width={1000}
-            height={1500}
-          />
-        </div>
-        <div class="flyer-overlay">
-          <div class="flyer-overlay-content">
-            <h3 class="text-white text-2xl font-bold mb-2">Ready to Participate?</h3>
-            <a href={ctaLink} class="inline-flex items-center gap-2 px-6 py-3 bg-white text-[#1A7A64] font-medium rounded-lg transition-all duration-300 hover:bg-opacity-90 transform hover:-translate-y-1">
-              {ctaText}
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-              </svg>
-            </a>
+        <div class="flyer-content">
+          <div class="flyer-image-wrapper">
+            <Image
+              src={FlyerImage}
+              alt="ICPIES 2025 Conference Flyer"
+              class="flyer-image"
+              width={1200}
+              height={1800}
+            />
+          </div>
+          <div class="flyer-overlay">
+            <div class="flyer-overlay-content">
+              <h3 class="text-white text-3xl font-bold mb-2">Ready to Participate?</h3>
+              <a href={ctaLink} class="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#1A7A64] font-medium rounded-lg transition-all duration-300 hover:bg-opacity-90 transform hover:-translate-y-1">
+                {ctaText}
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -62,43 +72,64 @@ const {
 <style>
   .welcome-flyer-section {
     position: relative;
-    /* Remove top positioning that was causing overlap */
-    /* top: 20px; - This was likely causing issues */
-    margin-bottom: 2rem; /* Add spacing at bottom */
+    margin-bottom: 2rem;
+    background-color: #f9fafb;
+  }
+
+  /* Background pattern */
+  .bg-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231A7A64' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-size: 100px 100px;
+  }
+
+  /* Wave patterns */
+  .wave-pattern {
+    height: 50px;
+    background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='50px' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='a' gradientUnits='userSpaceOnUse' x1='0' x2='0' y1='0' y2='50px'%3E%3Cstop offset='0' stop-color='%23ffffff'/%3E%3Cstop offset='1' stop-color='%23ffffff' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0 25C40 46 60 15 100 30C140 45 160 12 200 25C240 38 260 5 300 20C340 35 360 2 400 15L400 0L0 0Z' fill='url(%23a)'/%3E%3C/svg%3E");
+    background-size: 100% 100%;
+    opacity: 0.6;
+  }
+
+  .wave-pattern-bottom {
+    height: 50px;
+    background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='50px' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='a' gradientUnits='userSpaceOnUse' x1='0' x2='0' y1='0' y2='50px'%3E%3Cstop offset='0' stop-color='%23ffffff' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23ffffff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0 25C40 5 60 35 100 20C140 5 160 38 200 25C240 12 260 45 300 30C340 15 360 48 400 35L400 50L0 50Z' fill='url(%23a)'/%3E%3C/svg%3E");
+    background-size: 100% 100%;
+    opacity: 0.6;
+    transform: rotate(180deg);
   }
 
   .animated-bg-element {
     position: absolute;
     border-radius: 50%;
-    width: 400px;
-    height: 400px;
+    width: 500px;
+    height: 500px;
     filter: blur(80px);
     opacity: 0.6;
     animation: float 15s infinite ease-in-out;
-    top: -100px;
-    left: -100px;
-    /* Ensure these stay contained */
+    top: -150px;
+    left: -150px;
     z-index: 1;
+    background: linear-gradient(135deg, rgba(78, 205, 196, 0.2) 0%, rgba(78, 205, 196, 0.1) 100%);
   }
 
   .animated-bg-element.delay-2 {
     animation-delay: 5s;
-    width: 350px;
-    height: 350px;
+    width: 450px;
+    height: 450px;
     background: linear-gradient(135deg, rgba(13, 59, 102, 0.1) 0%, rgba(26, 122, 100, 0.1) 100%);
     top: auto;
     left: auto;
-    right: -50px;
-    bottom: 100px;
+    right: -75px;
+    bottom: 150px;
   }
 
   .animated-bg-element.delay-4 {
     animation-delay: 10s;
-    width: 300px;
-    height: 300px;
+    width: 400px;
+    height: 400px;
     background: linear-gradient(135deg, rgba(255, 159, 28, 0.1) 0%, rgba(78, 205, 196, 0.1) 100%);
-    top: 200px;
-    right: 30%;
+    top: 250px;
+    right: 40%;
     left: auto;
   }
 
@@ -112,44 +143,52 @@ const {
   .flyer-container {
     position: relative;
     width: 90%;
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     transform: translateY(50px);
     opacity: 0;
     animation: reveal-up 1s forwards ease-out;
     animation-delay: 0.2s;
-    /* Ensure container stays within its parent */
-    max-height: 600px;
+    max-height: 700px;
+  }
+
+  .flyer-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    margin: 6px;
+    overflow: hidden;
   }
 
   .flyer-border {
     position: absolute;
     inset: 0;
-    border: 2px solid transparent;
+    border: 8px solid transparent;
     border-radius: 12px;
     background: linear-gradient(135deg, #1A7A64 0%, #4ECDC4 50%, #0D3B66 100%) border-box;
     -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: destination-out;
     mask-composite: exclude;
     animation: border-pulse 4s infinite;
-    z-index: 3;
+    z-index: 15;
     pointer-events: none;
   }
 
   @keyframes border-pulse {
-    0% { opacity: 0.6; }
+    0% { opacity: 0.7; }
     50% { opacity: 1; }
-    100% { opacity: 0.6; }
+    100% { opacity: 0.7; }
   }
 
   .flyer-image-wrapper {
     position: relative;
-    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    padding-top: 56.25%;
     overflow: hidden;
-    border-radius: 10px;
+    border-radius: 8px;
   }
 
   .flyer-image {
@@ -160,6 +199,7 @@ const {
     height: 100%;
     object-fit: cover;
     transition: transform 1s ease;
+    border-radius: 8px;
   }
 
   .flyer-container:hover .flyer-image {
@@ -172,17 +212,19 @@ const {
     left: 0;
     right: 0;
     background: linear-gradient(to top, rgba(26, 122, 100, 0.9), transparent);
-    padding: 30px;
+    padding: 40px;
     display: flex;
     align-items: flex-end;
     height: 40%;
     opacity: 0;
     transition: opacity 0.5s ease, height 0.5s ease;
+    border-radius: 8px;
+    z-index: 5;
   }
 
   .flyer-container:hover .flyer-overlay {
     opacity: 1;
-    height: 50%;
+    height: 60%;
   }
 
   .flyer-overlay-content {
@@ -217,7 +259,7 @@ const {
 
   @media (max-width: 768px) {
     .flyer-overlay {
-      height: 50%;
+      height: 60%;
       opacity: 1;
       padding: 20px;
     }
@@ -227,14 +269,25 @@ const {
     }
 
     .animated-bg-element {
-      width: 200px;
-      height: 200px;
+      width: 300px;
+      height: 300px;
+    }
+
+    .flyer-border {
+      border-width: 6px;
+    }
+
+    .flyer-content {
+      margin: 4px;
+    }
+
+    .wave-pattern, .wave-pattern-bottom {
+      height: 30px;
     }
   }
 </style>
 
 <script>
-  // Intersection Observer to trigger animations when elements come into view
   document.addEventListener('DOMContentLoaded', function() {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -255,24 +308,40 @@ const {
       observer.observe(el);
     });
 
-    // Modify parallax effect to prevent going too far
     const flyerSection = document.querySelector('.welcome-flyer-section');
     if (flyerSection) {
       window.addEventListener('scroll', () => {
         const scrollPosition = window.scrollY;
         const flyerImage = document.querySelector('.flyer-image');
-        // Limit the offset range to prevent excessive movement
         const sectionTop = flyerSection.getBoundingClientRect().top + window.scrollY;
         const sectionBottom = sectionTop + flyerSection.offsetHeight;
 
-        // Only apply parallax when section is visible
         if (scrollPosition > sectionTop - window.innerHeight &&
             scrollPosition < sectionBottom) {
-          const offset = (scrollPosition - sectionTop) * 0.05; // Reduced multiplier
+          const offset = (scrollPosition - sectionTop) * 0.05;
           if (flyerImage) {
-            flyerImage.style.transform = `translateY(${offset}px)`;
+            flyerImage.style.transform = `translateY(${offset}px) scale(1.0)`;
           }
         }
+      });
+    }
+
+    const flyerContainer = document.querySelector('.flyer-container');
+    const flyerImage = document.querySelector('.flyer-image');
+
+    if (flyerContainer && flyerImage) {
+      flyerContainer.addEventListener('mouseenter', () => {
+        const currentTransform = flyerImage.style.transform;
+        const translateYMatch = currentTransform.match(/translateY\(([^)]+)\)/);
+        const translateY = translateYMatch ? translateYMatch[1] : '0px';
+        flyerImage.style.transform = `translateY(${translateY}) scale(1.05)`;
+      });
+
+      flyerContainer.addEventListener('mouseleave', () => {
+        const currentTransform = flyerImage.style.transform;
+        const translateYMatch = currentTransform.match(/translateY\(([^)]+)\)/);
+        const translateY = translateYMatch ? translateYMatch[1] : '0px';
+        flyerImage.style.transform = `translateY(${translateY}) scale(1.0)`;
       });
     }
   });
