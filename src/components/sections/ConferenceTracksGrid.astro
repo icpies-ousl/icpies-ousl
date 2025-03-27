@@ -19,9 +19,17 @@ interface Props {
   description?: string;
   tracks: Track[];
   viewAllLink?: string;
+  compact?: boolean;
 }
 
-const { title, subtitle, description, tracks, viewAllLink } = Astro.props;
+const {
+  title,
+  subtitle,
+  description,
+  tracks,
+  viewAllLink,
+  compact = false // Changed default to non-compact view
+} = Astro.props;
 
 // Define a set of colors for track cards if not specified
 const defaultColors = [
@@ -65,37 +73,25 @@ function getIconForTopic(topic: string): string {
 }
 ---
 
-<div class="py-20" id="conference-tracks">
+<div class="py-10" id="conference-tracks">
   <div class="max-w-6xl mx-auto px-4">
-    <!-- Standardized title styling across components -->
-    <div class="text-center mb-16">
-      <h2 class="text-[2.13rem] leading-9 font-semibold mb-6 text-[#2C3E50]">
-        {title}
-      </h2>
-
-      <!-- Using the standardized gradient divider -->
-      <div class="w-32 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-6"></div>
-
-      {subtitle &&
-        <p class="text-xl text-[#2C3E50]/80 mb-4 font-medium">
-          {subtitle}
-        </p>
-      }
-
+    <!-- More compact title section -->
+	<div class="text-center mb-10">
+		<h2 class="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-white mb-3">{title}</h2>
       {description &&
-        <p class="max-w-3xl mx-auto text-[#2C3E50]/70 leading-relaxed">
+        <p class="max-w-3xl mx-auto text-[#2C3E50]/70 leading-relaxed text-xs md:text-sm">
           {description}
         </p>
       }
     </div>
 
-    <div class="space-y-4">
+    <!-- Grid layout for more compact presentation -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       {tracks.map((track, index) => (
-        <div class="flex flex-col md:flex-row items-center gap-4 p-4 bg-white rounded-xl shadow-sm transition-all duration-300 hover:shadow-md border border-gray-100 group">
-          <!-- Left side with circular number and image -->
+        <div class="flex flex-row items-center gap-3 p-3 bg-white rounded-lg shadow-sm transition-all duration-300 hover:shadow-md border border-gray-100 group">
+          <!-- Smaller image -->
           <div class="flex-shrink-0 relative">
-            <!-- Circular background with image -->
-            <div class="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-3" style={`border-color: ${track.color || defaultColors[index % defaultColors.length]}`}>
+            <div class="w-12 h-12 md:w-16 md:h-16 rounded-full overflow-hidden border-2" style={`border-color: ${track.color || defaultColors[index % defaultColors.length]}`}>
               <img
                 src={track.image}
                 alt={track.title}
@@ -104,93 +100,113 @@ function getIconForTopic(topic: string): string {
               />
             </div>
 
-            <!-- Track number badge -->
+            <!-- Smaller badge -->
             <div
-              class="absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-sm"
+              class="absolute -top-1 -right-1 w-5 h-5 md:w-6 md:h-6 text-xs md:text-sm rounded-full flex items-center justify-center text-white font-bold shadow-sm"
               style={`background-color: ${track.color || defaultColors[index % defaultColors.length]}`}
             >
               {index + 1}
             </div>
           </div>
 
-          <!-- Right side with track details -->
-          <div class="flex-1 flex flex-col md:flex-row md:items-center">
-            <div class="md:flex-1">
-              <h3 class="text-lg font-bold text-center md:text-left"
-                  style={`color: ${track.color || defaultColors[index % defaultColors.length]}`}>
-                {track.title}
-              </h3>
+          <!-- Track details -->
+          <div class="flex-1 flex flex-col justify-center min-w-0">
+            <!-- Title with no margin -->
+            <h3 class="text-base font-bold truncate"
+                style={`color: ${track.color || defaultColors[index % defaultColors.length]}`}>
+              {track.title}
+            </h3>
 
+            <!-- Compact topic pills inline with subtitle -->
+            <div class="flex items-center flex-wrap gap-x-2 mt-1">
               {track.subtitle && (
-                <p class="text-sm font-medium text-gray-500 mb-0 text-center md:text-left">
-                  {track.subtitle}
+                <p class="text-xs text-gray-500 inline-block">
+                  {track.subtitle.length > 30 ? track.subtitle.substring(0, 30) + "..." : track.subtitle}
                 </p>
+              )}
+
+              {/* Show only dots for topics with hover to reveal */}
+              {track.topics && track.topics.length > 0 && (
+                <div class="flex items-center">
+                  <span class="inline-flex items-center h-5 group/tooltip relative">
+                    {track.topics.slice(0, Math.min(3, track.topics.length)).map((_, i) => (
+                      <span
+                        class="w-2 h-2 rounded-full mx-0.5 transition-transform hover:scale-125"
+                        style={`background-color: ${track.color || defaultColors[index % defaultColors.length]}`}
+                      ></span>
+                    ))}
+
+                    {/* If more than 3 topics */}
+                    {track.topics.length > 3 &&
+                      <span class="text-xs text-gray-500 ml-1">+{track.topics.length - 3}</span>
+                    }
+
+                    {/* Tooltip on hover */}
+                    <div class="absolute -top-2 left-0 transform -translate-y-full bg-white/95 backdrop-blur-sm p-2 rounded-md shadow-md border border-gray-200 w-48 opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-200 z-10">
+                      <div class="flex flex-wrap gap-1">
+                        {track.topics.slice(0, 5).map((topic) => (
+                          <span
+                            class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium"
+                            style={`background-color: ${track.color || defaultColors[index % defaultColors.length]}20; color: ${track.color || defaultColors[index % defaultColors.length]}`}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-2 w-2 mr-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                            </svg>
+                            {topic}
+                          </span>
+                        ))}
+                        {track.topics.length > 5 &&
+                          <span class="text-[10px] text-gray-500">+{track.topics.length - 5} more</span>
+                        }
+                      </div>
+                    </div>
+                  </span>
+                </div>
               )}
             </div>
 
-            {track.topics && track.topics.length > 0 && (
-              <div class="hidden md:flex flex-wrap gap-2 mt-2 md:mt-0 md:justify-end">
-                {track.topics.slice(0, 2).map((topic) => (
-                  <span
-                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium transition-all duration-300 hover:shadow-sm"
-                    style={`background-color: ${track.color || defaultColors[index % defaultColors.length]}20; color: ${track.color || defaultColors[index % defaultColors.length]}`}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={
-                        topic.toLowerCase().includes("micro") ? "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" :
-                        topic.toLowerCase().includes("recycl") ? "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" :
-                        topic.toLowerCase().includes("polic") ? "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" :
-                        "M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                      } />
-                    </svg>
-                    {topic}
-                  </span>
-                ))}
-                {track.topics.length > 2 && (
-                  <span
-                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-600 font-medium cursor-pointer hover:bg-gray-200 transition-all duration-300"
-                  >
-                    +{track.topics.length - 2} more
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
-
-          <!-- Right side arrow for mobile -->
-          <div class="flex md:hidden items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </div>
-
-          <!-- Right side arrow for desktop -->
-          <div class="hidden md:flex items-center justify-center">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 group-hover:bg-gray-200 transition-colors duration-300">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </div>
+            {/* Truncated description - single line only */}
+            <p class="text-gray-600 text-xs mt-1 line-clamp-1">{track.description}</p>
           </div>
         </div>
       ))}
     </div>
-
-    {viewAllLink && (
-      <div class="text-center mt-12">
-        <a
-          href={viewAllLink}
-          class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] text-white font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-[#1A7A64]/30 transform hover:-translate-y-1"
-        >
-          View All Tracks
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-          </svg>
-        </a>
-      </div>
-    )}
   </div>
 </div>
+
+<style>
+  /* Group hover effects */
+  .group {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .group::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .group:hover::after {
+    transform: scaleX(1);
+  }
+
+  .group:nth-child(1)::after { background-color: #1A7A64; }
+  .group:nth-child(2)::after { background-color: #2E5EAA; }
+  .group:nth-child(3)::after { background-color: #9B4D85; }
+  .group:nth-child(4)::after { background-color: #D66853; }
+  .group:nth-child(5)::after { background-color: #2B8C67; }
+  .group:nth-child(6)::after { background-color: #5E6CA2; }
+  .group:nth-child(7)::after { background-color: #946B2D; }
+  .group:nth-child(8)::after { background-color: #466365; }
+</style>
 
 <style>
   /* Group hover effects */
@@ -223,9 +239,4 @@ function getIconForTopic(topic: string): string {
   .group:nth-child(6)::after { background-color: #5E6CA2; }
   .group:nth-child(7)::after { background-color: #946B2D; }
   .group:nth-child(8)::after { background-color: #466365; }
-
-  /* Smaller border width */
-  .border-3 {
-    border-width: 3px;
-  }
 </style>

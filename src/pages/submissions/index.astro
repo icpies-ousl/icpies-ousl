@@ -1,106 +1,101 @@
 ---
-import SubmissionProcess from '../../components/sections/SubmissionProcess.astro';
-import TemplateDownload from '../../components/sections/TemplateDownload.astro';
-import SubmissionGuidelines from '../../components/sections/SubmissionGuidelines.astro';
-import BaseLayout from '../../layouts/BaseLayout.astro'
+import SubmissionProcess from "../../components/sections/SubmissionProcess.astro";
+import TemplateDownload from "../../components/sections/TemplateDownload.astro";
+import SubmissionGuidelines from "../../components/sections/SubmissionGuidelines.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 // Define submission steps
 const submissionSteps = [
-    {
-        id: 1,
-        title: "Abstract Submission",
-        description: "Submit your abstract to ICPIES 2025",
-        date: "March 15, 2025 - April 4, 2025",
-        icon: "abstract",
-        status: "completed"
-    },
-    {
-        id: 2,
-        title: "Review Process",
-        description: "Your abstract will be reviewed by the technical committee",
-        date: "April 4, 2025 - May 2, 2025",
-        icon: "review",
-        status: "completed"
-    },
-    {
-        id: 3,
-        title: "Full Paper Submission",
-        description: "Submit your full paper to ICPIES 2025",
-        date: "May 2, 2025 - June 6, 2025",
-        icon: "paper",
-        status: "active"
-    },
-    {
-        id: 4,
-        title: "Camera-ready Submission",
-        description: "Submit your camera-ready paper to ICPIES 2025",
-        date: "June 6, 2025 - June 20, 2025",
-        icon: "camera",
-        status: "upcoming"
-    },
-    {
-        id: 5,
-        title: "Registration",
-        description: "Register for the conference",
-        date: "June 20, 2025 - July 18, 2025",
-        icon: "registration",
-        status: "upcoming"
-    },
-    {
-        id: 6,
-        title: "Presentation",
-        description: "Present your paper at the conference",
-        date: "July 18, 2025 - July 20, 2025",
-        icon: "presentation",
-        status: "upcoming"
-    },
-    {
-        id: 7,
-        title: "Publication",
-        description: "Your paper will be published in the conference proceedings",
-        date: "July 20, 2025",
-        icon: "publication",
-        status: "upcoming"
-    }
+  {
+    id: 1,
+    title: "Abstract Submission",
+    date: "March 15, 2025 - April 4, 2025",
+    icon: "abstract",
+    status: "completed",
+  },
+  {
+    id: 2,
+    title: "Review Process",
+    date: "April 4, 2025 - May 2, 2025",
+    icon: "review",
+    status: "completed",
+  },
+  {
+    id: 3,
+    title: "Full Paper Submission",
+    date: "May 2, 2025 - June 6, 2025",
+    icon: "paper",
+    status: "active",
+  },
+  {
+    id: 4,
+    title: "Camera-ready Submission",
+    date: "June 6, 2025 - June 20, 2025",
+    icon: "camera",
+    status: "upcoming",
+  },
+  {
+    id: 5,
+    title: "Registration",
+    date: "June 20, 2025 - July 18, 2025",
+    icon: "registration",
+    status: "upcoming",
+  },
+  {
+    id: 6,
+    title: "Presentation",
+    date: "July 18, 2025 - July 20, 2025",
+    icon: "presentation",
+    status: "upcoming",
+  },
+  {
+    id: 7,
+    title: "Publication",
+    date: "July 20, 2025",
+    icon: "publication",
+    status: "upcoming",
+  },
 ];
 
 // Define templates for download
 const templateList = [
-    {
-        title: "Full Paper Template",
-        description: "Use this template to format your full paper submission.",
-        format: "Microsoft Word",
-        icon: "word",
-        url: "/templates/ICPIES2025_Full_Paper_Template.docx"
-    },
-    {
-        title: "Abstract Template",
-        description: "Use this template to format your abstract submission.",
-        format: "LaTeX",
-        icon: "latex",
-        url: "/templates/ICPIES2025_Abstract_Template.tex"
-    },
-    {
-        title: "Camera Ready Template",
-        description: "Use this template for your camera ready submission.",
-        format: "word",
-        icon: "word",
-        url: "/templates/ICPIES2025_Camera_Ready_Template.docx"
-    },
-    {
-        title: "Presentation Template",
-        description: "Use this template for your presentation.",
-        format: "pdf",
-        icon: "pdf",
-        url: "/templates/ICPIES2025_Presentation_Template.pdf"
-    }
+  {
+    title: "Full Paper Template",
+    description: "Use this template to format your full paper submission.",
+    format: "Microsoft Word",
+    icon: "word",
+    url: "/templates/ICPIES2025_Full_Paper_Template.docx",
+  },
+  {
+    title: "Abstract Template",
+    description: "Use this template to format your abstract submission.",
+    format: "Microsoft Word",
+    icon: "word",
+    url: "/templates/ICPIES2025_Abstract_Template.docx",
+  },
+  {
+    title: "Camera Ready Template",
+    description: "Use this template for your camera ready submission.",
+    format: "word",
+    comingSoon: true,
+    icon: "word",
+    url: "#",
+  },
+  {
+    title: "Presentation Template",
+    description: "Use this template for your presentation.",
+    format: "pdf",
+    icon: "pdf",
+    comingSoon: true,
+    url: "#",
+  },
 ];
 
 // Define author guidelines tabs
 const authorGuidelinesTabs = [
-    {
-        id: "abstract-guidelines",
-        title: "Abstract Guidelines",
-        content: `
+  {
+    id: "abstract-guidelines",
+    title: "Abstract Guidelines",
+    content: `
             <h2>Abstract Guidelines</h2>
             <p>The abstract should report the original research.</p>
             <p>The abstract must strictly adhere to the prescribed abstract template. Carefully revise the abstract for language and formatting.</p>
@@ -116,28 +111,29 @@ const authorGuidelinesTabs = [
                 <li>All margins except left: 25mm. Left margin:30 mm. Gutter:00</li>
                 <li>Font: Arial, 11 points; Line spacing: 1.5 (18 pt), one column of text.</li>
             </ul>
-        `
-    },
-    {
-        id: "full-paper-guidelines",
-        title: "Full Paper Guidelines",
-        content: `
+        `,
+  },
+  {
+    id: "full-paper-guidelines",
+    title: "Full Paper Guidelines",
+    content: `
             <h2>Full Paper Guidelines</h2>
             <p>The full paper should not be more than 06 pages in length. Manuscripts should be submitted in Microsoft Word format (*.docx). Page sizes should be A4 & use Normal format for margin. The paper should follow the formatting guidelines strictly. The easiest way to achieve this is to use the provided template and change the text inside to reflect your paper content. Alternatively, format guidelines are given below, should you prefer to format the paper from scratch.</p>
             <p>All the instructions regarding the camera-ready paper should be the same as the full paper format guidelines. Here Author details should be included.</p>
             <p>Please note that the Technical Programme Committees for ICPIES 2025 and the word of the Committee regarding the selection of papers for publication at indexed journals is final. Plagiarism and other errors will be checked.</p>
             <p><strong>Note:</strong> Should you encounter any issues during the Full Paper submission process, please do not hesitate to contact us via email: icpies@ou.ac.lk</p>
-        `
-    },
-    {
-        id: "camera-ready-guidelines",
-        title: "Camera Ready Paper Guidelines",
-        content: "<p>All the instructions regarding the camera-ready paper should be the same as the full paper format guidelines. Here Author details should be included.</p>"
-    },
-    {
-        id: "presentation-guidelines",
-        title: "Presentation Submission Guidelines",
-        content: `
+        `,
+  },
+  {
+    id: "camera-ready-guidelines",
+    title: "Camera Ready Paper Guidelines",
+    content:
+      "<p>All the instructions regarding the camera-ready paper should be the same as the full paper format guidelines. Here Author details should be included.</p>",
+  },
+  {
+    id: "presentation-guidelines",
+    title: "Presentation Submission Guidelines",
+    content: `
             <h2>Presentation Submission Guidelines</h2>
             <h3>Timing of Oral Presentation</h3>
             <ul>
@@ -182,8 +178,8 @@ const authorGuidelinesTabs = [
                 <li>It is recommended to choose an environment with minimal background noises.</li>
                 <li>It is recommended to set up your camera at eye level, or just slightly above.</li>
             </ul>
-        `
-    }
+        `,
+  },
 ];
 
 // Define general information content
@@ -220,107 +216,147 @@ const technicalProgramContent = `
 
 // Define paper tracks
 const tracks = [
-    {
-        id: "track1",
-        title: "Track 1: Plastic Materials and Technologies",
-        topics: [
-            "Novel plastics and composite materials",
-            "Biodegradable and compostable plastics",
-            "Plastic processing technologies",
-            "Plastic material characterization",
-            "Advances in polymer science"
-        ]
-    },
-    {
-        id: "track2",
-        title: "Track 2: Circular Economy and Recycling",
-        topics: [
-            "Plastic waste management",
-            "Recycling technologies and innovations",
-            "Upcycling plastic waste",
-            "Extended producer responsibility",
-            "Life cycle assessment of plastic products"
-        ]
-    },
-    {
-        id: "track3",
-        title: "Track 3: Environmental Impact and Sustainability",
-        topics: [
-            "Plastic pollution and mitigation strategies",
-            "Microplastics in the environment",
-            "Environmental monitoring and assessment",
-            "Regulatory frameworks and policies",
-            "Sustainable development goals and plastics"
-        ]
-    },
-    {
-        id: "track4",
-        title: "Track 4: Education, Awareness and Social Dimensions",
-        topics: [
-            "Public awareness and behavioral change",
-            "Educational programs and initiatives",
-            "Community engagement in plastic waste reduction",
-            "Social and economic impacts of plastic pollution",
-            "Case studies of successful interventions"
-        ]
-    }
+  {
+    id: "track1",
+    title: "Track 1: Plastic Materials and Technologies",
+    topics: [
+      "Novel plastics and composite materials",
+      "Biodegradable and compostable plastics",
+      "Plastic processing technologies",
+      "Plastic material characterization",
+      "Advances in polymer science",
+    ],
+  },
+  {
+    id: "track2",
+    title: "Track 2: Circular Economy and Recycling",
+    topics: [
+      "Plastic waste management",
+      "Recycling technologies and innovations",
+      "Upcycling plastic waste",
+      "Extended producer responsibility",
+      "Life cycle assessment of plastic products",
+    ],
+  },
+  {
+    id: "track3",
+    title: "Track 3: Environmental Impact and Sustainability",
+    topics: [
+      "Plastic pollution and mitigation strategies",
+      "Microplastics in the environment",
+      "Environmental monitoring and assessment",
+      "Regulatory frameworks and policies",
+      "Sustainable development goals and plastics",
+    ],
+  },
+  {
+    id: "track4",
+    title: "Track 4: Education, Awareness and Social Dimensions",
+    topics: [
+      "Public awareness and behavioral change",
+      "Educational programs and initiatives",
+      "Community engagement in plastic waste reduction",
+      "Social and economic impacts of plastic pollution",
+      "Case studies of successful interventions",
+    ],
+  },
 ];
 ---
 
-<BaseLayout title="Submissions | ICPIES 2025" description="Submit your research to the International Conference on Plastics, Innovations, and Environmental Sustainability">
-    <!-- Hero Section -->
-	<section class="py-32 bg-gradient-to-b from-[#1A7A64]/5 to-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-				<h1 class="text-4xl md:text-5xl font-bold text-[#2C3E50] mb-6">
-				  Submit Your Papers
-				</h1>
-                <div class="w-32 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-6"></div>
-                <p class="text-lg md:text-xl text-[#2C3E50]/80 max-w-3xl mx-auto">
-                    Join leading researchers, practitioners, and policy makers at ICPIES 2025 to share your work on plastics, innovations, and environmental sustainability.
-                </p>
-
-                <!-- CTA Button -->
-                <div class="mt-8">
-                    <a href="#submission-portal" class="inline-flex items-center gap-2 px-6 py-3 bg-[#1A7A64] text-white font-medium rounded-lg transition-all duration-300 hover:bg-[#156954] transform hover:-translate-y-1 hover:shadow-lg hover:shadow-[#1A7A64]/30">
-                        Submit Your Paper
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                        </svg>
-                    </a>
-                </div>
-
-				<div class="mt-10 max-w-3xl mx-auto">
-                    <div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-5 shadow-sm">
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 pt-0.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            							<div class="ml-3">
-								<h3 class="text-base font-bold text-blue-800">ACKNOWLEDGMENT</h3>
-								<p class="text-sm text-blue-700 mt-1">
-									The Microsoft <a href="https://cmt3.research.microsoft.com" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">CMT service</a> was used for managing the peer-reviewing process for this conference. This service was provided for free by Microsoft and they bore all expenses, including costs for Azure cloud services as well as for software development and support.
-								</p>
-							</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<BaseLayout
+  title="Submissions | ICPIES 2025"
+  description="Submit your research to the International Conference on Plastics, Innovations, and Environmental Sustainability"
+>
+  <!-- Hero Section -->
+  <section class="py-32 bg-gradient-to-b from-[#1A7A64]/5 to-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-[#2C3E50] mb-6">
+          Submit Your Papers
+        </h1>
+        <div
+          class="w-32 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-6"
+        >
         </div>
-    </section>
+        <p class="text-lg md:text-xl text-[#2C3E50]/80 max-w-3xl mx-auto">
+          Join leading researchers, practitioners, and policy makers at ICPIES
+          2025 to share your work on plastics, innovations, and environmental
+          sustainability.
+        </p>
 
-    <!-- Process Timeline -->
-    <section>
-        <SubmissionProcess
-            title="Submission Process"
-            subtitle="Follow these steps to submit your research"
-            steps={submissionSteps}
-        />
-    </section>
+        <!-- CTA Button -->
+        <div class="mt-8">
+          <a
+            href="#submission-portal"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-[#1A7A64] text-white font-medium rounded-lg transition-all duration-300 hover:bg-[#156954] transform hover:-translate-y-1 hover:shadow-lg hover:shadow-[#1A7A64]/30"
+          >
+            Submit Your Paper
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                clip-rule="evenodd"></path>
+            </svg>
+          </a>
+        </div>
 
-    <!-- <section class="py-16 bg-[#F8FAFC]" id="call-for-papers">
+        <div class="mt-10 max-w-3xl mx-auto">
+          <div
+            class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-5 shadow-sm"
+          >
+            <div class="flex items-start">
+              <div class="flex-shrink-0 pt-0.5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 text-blue-600"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                    clip-rule="evenodd"></path>
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-base font-bold text-blue-800">
+                  ACKNOWLEDGMENT
+                </h3>
+                <p class="text-sm text-blue-700 mt-1">
+                  The Microsoft <a
+                    href="https://cmt3.research.microsoft.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-blue-600 hover:text-blue-800 underline"
+                    >CMT service</a
+                  > was used for managing the peer-reviewing process for this conference.
+                  This service was provided for free by Microsoft and they bore all
+                  expenses, including costs for Azure cloud services as well as for
+                  software development and support.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Timeline -->
+  <section>
+    <SubmissionProcess
+      title="Submission Process"
+      subtitle="Follow these steps to submit your research"
+      steps={submissionSteps}
+    />
+  </section>
+
+  <!-- <section class="py-16 bg-[#F8FAFC]" id="call-for-papers">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-[#2C3E50] mb-4">Call for Papers</h2>
@@ -345,131 +381,174 @@ const tracks = [
         </div>
     </section> -->
 
-    <!-- General Information -->
-    <section class="py-16 bg-white" id="general-information">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-[#2C3E50] mb-4">General Information</h2>
-                <div class="w-24 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-6"></div>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-md p-8 max-w-4xl mx-auto">
-                <div class="prose prose-lg max-w-none">
-                    <Fragment set:html={generalInfoContent} />
-
-                    <div class="my-8">
-                        <Fragment set:html={correspondingAuthorContent} />
-                    </div>
-
-                    <div class="my-8">
-                        <Fragment set:html={authorRegistrationContent} />
-                    </div>
-
-                    <div class="my-8">
-                        <Fragment set:html={technicalProgramContent} />
-                    </div>
-                </div>
-
-                <!-- Submit Button -->
-                <div class="mt-10 text-center" id="submission-portal">
-                    <a href="https://cmt.research.microsoft.com/ICPIES2025" target="_blank" rel="noopener noreferrer"
-                       class="inline-flex items-center gap-2 px-8 py-4 bg-[#1A7A64] text-white font-bold rounded-lg transition-all duration-300 hover:bg-[#156954] transform hover:-translate-y-1 hover:shadow-lg hover:shadow-[#1A7A64]/30">
-                        Submit Online
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </a>
-                </div>
-            </div>
+  <!-- General Information -->
+  <section class="py-16 bg-white" id="general-information">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-[#2C3E50] mb-4">
+          General Information
+        </h2>
+        <div
+          class="w-24 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-6"
+        >
         </div>
-    </section>
+      </div>
 
-    <!-- Templates Download -->
-    <TemplateDownload
-        title="Paper Templates"
-        subtitle="Download these templates for your submissions"
-        templates={templateList}
-    />
+      <div class="bg-white rounded-xl shadow-md p-8 max-w-4xl mx-auto">
+        <div class="prose prose-lg max-w-none">
+          <Fragment set:html={generalInfoContent} />
 
-    <!-- Author Guidelines -->
-    <SubmissionGuidelines
-        title="Author Guidelines"
-        subtitle="Detailed guidelines for preparing your submission"
-        tabs={authorGuidelinesTabs}
-    />
+          <div class="my-8">
+            <Fragment set:html={correspondingAuthorContent} />
+          </div>
 
-    <!-- Support Section -->
-    <section class="py-16 bg-[#F8FAFC]">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-8">
-                <h2 class="text-3xl font-bold text-[#2C3E50] mb-4">Need Help?</h2>
-                <div class="w-24 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-6"></div>
-                <p class="text-lg text-[#2C3E50]/80 max-w-3xl mx-auto">
-                    If you have any questions or need assistance with your submission, please don't hesitate to contact us.
-                </p>
-            </div>
+          <div class="my-8">
+            <Fragment set:html={authorRegistrationContent} />
+          </div>
 
-            <div class="bg-white rounded-xl shadow-md overflow-hidden max-w-2xl mx-auto">
-                <div class="p-8">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-[#1A7A64]/10 p-3 rounded-full mr-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#1A7A64]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold text-[#2C3E50]">Email Support</h3>
-                            <p class="text-[#2C3E50]/80">For any queries related to submissions</p>
-                        </div>
-                    </div>
-
-                    <a href="mailto:icpies@ou.ac.lk" class="block w-full py-3 bg-[#1A7A64] text-white text-center rounded-lg font-medium hover:bg-[#156954] transition-colors">
-                        icpies@ou.ac.lk
-                    </a>
-                </div>
-            </div>
+          <div class="my-8">
+            <Fragment set:html={technicalProgramContent} />
+          </div>
         </div>
-    </section>
+
+        <!-- Submit Button -->
+        <div class="mt-10 text-center" id="submission-portal">
+          <a
+            href="https://cmt.research.microsoft.com/ICPIES2025"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-8 py-4 bg-[#1A7A64] text-white font-bold rounded-lg transition-all duration-300 hover:bg-[#156954] transform hover:-translate-y-1 hover:shadow-lg hover:shadow-[#1A7A64]/30"
+          >
+            Submit Online
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Templates Download -->
+  <TemplateDownload
+    title="Paper Templates"
+    subtitle="Download these templates for your submissions"
+    templates={templateList}
+  />
+
+  <!-- Author Guidelines -->
+  <SubmissionGuidelines
+    title="Author Guidelines"
+    subtitle="Detailed guidelines for preparing your submission"
+    tabs={authorGuidelinesTabs}
+  />
+
+  <!-- Support Section -->
+  <section class="py-16 bg-[#F8FAFC]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-[#2C3E50] mb-4">Need Help?</h2>
+        <div
+          class="w-24 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-6"
+        >
+        </div>
+        <p class="text-lg text-[#2C3E50]/80 max-w-3xl mx-auto">
+          If you have any questions or need assistance with your submission,
+          please don't hesitate to contact us.
+        </p>
+      </div>
+
+      <div
+        class="bg-white rounded-xl shadow-md overflow-hidden max-w-2xl mx-auto"
+      >
+        <div class="p-8">
+          <div class="flex items-center mb-6">
+            <div class="bg-[#1A7A64]/10 p-3 rounded-full mr-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6 text-[#1A7A64]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                ></path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-[#2C3E50]">
+                Email Support
+              </h3>
+              <p class="text-[#2C3E50]/80">
+                For any queries related to submissions
+              </p>
+            </div>
+          </div>
+
+          <a
+            href="mailto:icpies@ou.ac.lk"
+            class="block w-full py-3 bg-[#1A7A64] text-white text-center rounded-lg font-medium hover:bg-[#156954] transition-colors"
+          >
+            icpies@ou.ac.lk
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
-    /* Additional styles for the submission page */
-    .prose h2 {
-        color: #2C3E50;
-        font-weight: 600;
-        margin-top: 1.5rem;
-        margin-bottom: 1rem;
-        font-size: 1.5rem;
-    }
+  /* Additional styles for the submission page */
+  .prose h2 {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+  }
 
-    .prose h3 {
-        color: #2C3E50;
-        font-weight: 600;
-        margin-top: 1.25rem;
-        margin-bottom: 0.75rem;
-        font-size: 1.25rem;
-    }
+  .prose h3 {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-top: 1.25rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+  }
 
-    .prose p {
-        margin-bottom: 1rem;
-        line-height: 1.7;
-        color: rgba(44, 62, 80, 0.85);
-    }
+  .prose p {
+    margin-bottom: 1rem;
+    line-height: 1.7;
+    color: rgba(44, 62, 80, 0.85);
+  }
 
-    .prose ul {
-        margin-top: 0.5rem;
-        margin-bottom: 1rem;
-        padding-left: 1.5rem;
-        list-style-type: disc;
-        color: rgba(44, 62, 80, 0.85);
-    }
+  .prose ul {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    list-style-type: disc;
+    color: rgba(44, 62, 80, 0.85);
+  }
 
-    .prose li {
-        margin-bottom: 0.5rem;
-    }
+  .prose li {
+    margin-bottom: 0.5rem;
+  }
 
-    .prose strong {
-        font-weight: 600;
-        color: #2C3E50;
-    }
+  .prose strong {
+    font-weight: 600;
+    color: #2c3e50;
+  }
 </style>
