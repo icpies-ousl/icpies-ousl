@@ -4,7 +4,9 @@ interface DateItem {
   date: string;
   isPassed?: boolean;
   isHighlighted?: boolean;
-  icon?: string; // Optional icon name for events
+  isCurrent?: boolean;
+  icon?: string;
+  eventType?: string;
 }
 
 interface Props {
@@ -27,7 +29,6 @@ const processedDates = dates.map(date => ({
   ...date,
   isPassed: date.isPassed !== undefined ? date.isPassed : isDatePassed(date.date)
 }));
-
 // Sort dates chronologically
 const sortedDates = [...processedDates].sort((a, b) => {
   return new Date(a.date).getTime() - new Date(b.date).getTime();
@@ -35,248 +36,278 @@ const sortedDates = [...processedDates].sort((a, b) => {
 
 // Format date for display (10th March 2025 format)
 const formatDateWithSuffix = (dateStr: string) => {
-  const date = new Date(dateStr);
-  const day = date.getDate();
+  try {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return dateStr;
 
-  // Add suffix to day (st, nd, rd, th)
-  const suffix =
-    day % 10 === 1 && day !== 11 ? 'st' :
-    day % 10 === 2 && day !== 12 ? 'nd' :
-    day % 10 === 3 && day !== 13 ? 'rd' : 'th';
+    const day = date.getDate();
+    const suffix =
+      day % 10 === 1 && day !== 11 ? 'st' :
+      day % 10 === 2 && day !== 12 ? 'nd' :
+      day % 10 === 3 && day !== 13 ? 'rd' : 'th';
 
-  return date.toLocaleDateString('en-US', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  }).replace(/\d+/, day + suffix);
-};
-
-// Format short date
-const formatShortDate = (dateStr: string) => {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('en-US', {
-    day: '2-digit',
-    month: 'short'
-  });
-};
-
-// Get event type based on event name
-const getEventType = (eventName: string) => {
-  if (eventName.includes("Camera-ready") || eventName.includes("Early Bird") || eventName.includes("Registration Deadline")) {
-    return "physical";
+    return date.toLocaleDateString('en-US', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }).replace(/\d+/, day + suffix);
+  } catch (e) {
+    console.error("Error formatting date:", e);
+    return dateStr;
   }
-  return "standard";
 };
 
-// Calculate progress percentage
-const calculateProgress = () => {
-  if (sortedDates.length <= 1) return 100;
+// Find current event index
+const findCurrentEventIndex = () => {
+  // First check if any event is explicitly marked as current
+  const explicitCurrent = sortedDates.findIndex(date => date.isCurrent === true);
+  if (explicitCurrent >= 0) return explicitCurrent;
 
-  const firstDate = new Date(sortedDates[0].date).getTime();
-  const lastDate = new Date(sortedDates[sortedDates.length - 1].date).getTime();
+  // Check for March 15 event
+  const march15Event = sortedDates.findIndex(date => {
+    const eventDate = new Date(date.date);
+    return eventDate.getMonth() === 2 && eventDate.getDate() === 15; // Month is 0-indexed, 2 = March
+  });
+  if (march15Event >= 0) return march15Event;
+
+  // Otherwise, use date-based logic
   const today = new Date().getTime();
-
-  if (today <= firstDate) return 0;
-  if (today >= lastDate) return 100;
-
-  return Math.floor(((today - firstDate) / (lastDate - firstDate)) * 100);
+  for (let i = 0; i < sortedDates.length; i++) {
+    if (new Date(sortedDates[i].date).getTime() > today) {
+      return i;
+    }
+  }
+  return -1;
 };
 
-const progressPercentage = calculateProgress();
+
+const currentEventIndex = findCurrentEventIndex();
 ---
 
-<section class="timeline-section py-10 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900" id="important-dates">
+<section class="important-dates-section pt-16 pb-10 px-4 sm:px-6 lg:px-8relative" id="important-dates">
   <div class="max-w-6xl mx-auto">
-    <!-- Simple header -->
+    <!-- Section header -->
     <div class="text-center mb-10">
-      <h2 class="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-white mb-3">{title}</h2>
-
+      <h2 class="text-2xl md:text-3xl font-semibold text-gray-800 mb-3">{title}</h2>
       {subtitle &&
-        <p class="text-base text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+        <p class="text-base text-gray-600 max-w-3xl mx-auto">
           {subtitle}
         </p>
       }
     </div>
 
-    <!-- Simple legend -->
-    <div class="flex justify-center gap-6 mb-8 text-sm">
-      <div class="flex items-center gap-2">
-        <div class="w-3 h-3 rounded-full bg-indigo-500"></div>
-        <span class="text-gray-600 dark:text-gray-300">Upcoming</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <div class="w-3 h-3 rounded-full bg-amber-500"></div>
-        <span class="text-gray-600 dark:text-gray-300">Current Focus</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <div class="w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600"></div>
-        <span class="text-gray-600 dark:text-gray-300">Past</span>
-      </div>
-    </div>
+    {/* Desktop Timeline - with alternating cards and arrows */}
+    <div class="hidden lg:block relative px-4 mb-12">
+      {/* Main timeline line */}
+      <div class="absolute left-0 right-0 top-28 h-2 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-full shadow-sm"></div>
 
-    <!-- Clean horizontal timeline -->
-    <div class="timeline-wrapper relative mt-12 mb-8 overflow-hidden">
-      <!-- Progress bar -->
-      <div class="absolute w-full h-0.5 top-9 bg-gray-200 dark:bg-gray-700 z-0">
-        <div class="h-full bg-indigo-500 dark:bg-indigo-400" style={`width: ${progressPercentage}%`}></div>
-      </div>
-
-      <!-- Timeline nodes -->
-      <div class="timeline-nodes relative flex min-w-max overflow-x-auto hide-scrollbar py-4 px-2">
+      <div class="flex justify-between relative min-h-[250px]">
         {sortedDates.map((dateItem, index) => {
-          const eventType = getEventType(dateItem.event);
-          const isHighlighted = dateItem.isHighlighted;
           const isPassed = dateItem.isPassed;
+          const isCurrent = index === currentEventIndex || dateItem.isCurrent;
+          const isHighlighted = dateItem.isHighlighted;
+          const isEven = index % 2 === 0;
+
+          // Calculate colors based on status
+          const nodeColor = isPassed
+            ? 'bg-[#1A7A64]'
+            : isCurrent
+              ? 'bg-[#FF9F1C]'
+              : isHighlighted
+                ? 'bg-emerald-500'
+                : 'bg-gray-300';
+
+          const textColor = isPassed
+            ? 'text-[#1A7A64]'
+            : isCurrent
+              ? 'text-[#FF9F1C]'
+              : isHighlighted
+                ? 'text-emerald-500'
+                : 'text-gray-500';
+
+          const ringColor = isPassed
+            ? 'ring-[#1A7A64]/20'
+            : isCurrent
+              ? 'ring-[#FF9F1C]/20'
+              : isHighlighted
+                ? 'ring-emerald-500/20'
+                : 'ring-gray-200';
 
           return (
-            <div class="timeline-node relative mx-4 first:ml-2 last:mr-2" style="min-width: 160px; max-width: 160px;">
-              <!-- Node point -->
-              <div class={`absolute left-1/2 top-5 w-4 h-4 rounded-full z-10 -translate-x-1/2 -translate-y-1/2 ${
-                isPassed
-                  ? 'bg-gray-300 dark:bg-gray-600'
-                  : isHighlighted
-                    ? 'bg-amber-500 dark:bg-amber-400'
-                    : 'bg-indigo-500 dark:bg-indigo-400'
-              }`}></div>
+            <div class="relative" style={`flex-basis: ${100/sortedDates.length}%; max-width: ${100/sortedDates.length}%`}>
+              {/* Timeline node */}
+              <div class={`absolute left-1/2 top-28 -translate-x-1/2 -translate-y-1/2 w-5 h-5 rounded-full ${nodeColor} ring-4 ${ringColor} shadow-md z-10 ${isCurrent ? 'animate-pulse' : ''}`}></div>
 
-              <!-- Date above the line -->
-              <div class="text-center mb-8">
-                <span class={`text-sm font-medium ${
-                  isPassed
-                    ? 'text-gray-500 dark:text-gray-400'
-                    : isHighlighted
-                      ? 'text-amber-600 dark:text-amber-400'
-                      : 'text-indigo-600 dark:text-indigo-400'
-                }`}>
-                  {formatShortDate(dateItem.date)}
-                </span>
-              </div>
+              {/* Card wrapper with arrow connector */}
+              <div class={`absolute ${isEven ? '-top-2' : 'top-40'} left-1/2 -translate-x-1/2 w-40`}>
+                {/* Arrow connecting to timeline */}
+                <div class={`absolute left-1/2 -translate-x-1/2 ${isEven ? 'bottom-0 top-[calc(100%+4px)]' : 'bottom-[calc(100%+4px)]'} w-px h-8 ${nodeColor}`}></div>
+                <div class={`absolute left-1/2 -translate-x-1/2 transform -translate-y-[1px] ${isEven ? 'top-[calc(100%+11px)]' : 'bottom-[calc(100%+3px)]'} w-0 h-0 border-solid ${
+                  isEven
+                    ? 'border-t-0 border-b-[6px] border-l-[6px] border-r-[6px] border-b-' + nodeColor.replace('bg-', '') + ' border-l-transparent border-r-transparent'
+                    : 'border-b-0 border-t-[6px] border-l-[6px] border-r-[6px] border-t-' + nodeColor.replace('bg-', '') + ' border-l-transparent border-r-transparent'
+                }`}></div>
 
-              <!-- Event card below the line -->
-              <div class={`mt-6 p-3 border rounded shadow-sm transition ${
-                isPassed
-                  ? 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'
-                  : isHighlighted
-                    ? 'bg-white dark:bg-gray-800 border-amber-200 dark:border-amber-700'
-                    : 'bg-white dark:bg-gray-800 border-indigo-200 dark:border-indigo-700'
-              }`}>
-                <h3 class={`text-sm font-medium mb-1 ${
-                  isPassed
-                    ? 'text-gray-500 dark:text-gray-400'
-                    : isHighlighted
-                      ? 'text-amber-700 dark:text-amber-300'
-                      : 'text-indigo-700 dark:text-indigo-300'
-                }`}>
-                  {dateItem.event}
-                </h3>
-                <p class="text-xs text-gray-500 dark:text-gray-400">
-                  {formatDateWithSuffix(dateItem.date)}
-                </p>
+                {/* Date card */}
+                <div class={`bg-white p-3 rounded-lg shadow-md border-l-4 ${
+                  isPassed ? 'border-[#1A7A64]' : isCurrent ? 'border-[#FF9F1C]' : isHighlighted ? 'border-emerald-500' : 'border-gray-300'
+                } transition-transform duration-300 hover:scale-105`}>
+                  <p class={`text-xs font-bold mb-1 ${textColor}`}>
+                    {formatDateWithSuffix(dateItem.date)}
+                  </p>
+                  <p class="text-sm font-semibold text-gray-800">{dateItem.event}</p>
 
-                {!isPassed && (
-                  <div class="mt-2">
-                    {eventType === "physical" && (
-                      <span class="inline-block px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-300 text-xs rounded">
-                        Event
-                      </span>
-                    )}
-                    {isHighlighted && eventType !== "physical" && (
-                      <span class="inline-block px-2 py-0.5 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-300 text-xs rounded">
-                        Current
-                      </span>
-                    )}
+                  {/* Status indicator */}
+                  <div class={`mt-2 inline-block px-2 py-0.5 text-[10px] font-medium rounded-full ${
+                    isPassed
+                      ? 'bg-[#1A7A64]/10 text-[#1A7A64]'
+                      : isCurrent
+                        ? 'bg-[#FF9F1C]/20 text-[#FF9F1C]'
+                        : 'bg-gray-100 text-gray-500'
+                  }`}>
+                    {isPassed ? 'Completed' : isCurrent ? 'Current' : 'Upcoming'}
                   </div>
-                )}
+                </div>
               </div>
             </div>
           );
         })}
       </div>
-
-      <!-- Scroll indicators -->
-      <div class="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white dark:from-gray-900 to-transparent pointer-events-none"></div>
-      <div class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white dark:from-gray-900 to-transparent pointer-events-none"></div>
     </div>
 
-    <!-- Mobile view toggle -->
-    <div class="md:hidden text-center mt-6">
-      <button class="view-all-btn px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-md">
-        View All Dates
-      </button>
-    </div>
+    {/* Tablet Timeline - Simplified */}
+    <div class="hidden md:block lg:hidden relative px-4 mb-10">
+      <div class="absolute left-0 right-0 top-20 h-1.5 bg-gray-200 rounded-full"></div>
+      <div class="flex justify-between relative min-h-[180px] pb-10">
+        {sortedDates.map((dateItem, index) => {
+          const isPassed = dateItem.isPassed;
+          const isCurrent = index === currentEventIndex || dateItem.isCurrent;
+          const isHighlighted = dateItem.isHighlighted;
+          const isEven = index % 2 === 0;
 
-    <!-- Mobile list view -->
-    <div class="md:hidden mobile-dates-list mt-8 hidden space-y-3">
-      {sortedDates.map((dateItem) => {
-        const eventType = getEventType(dateItem.event);
-        const isHighlighted = dateItem.isHighlighted;
-        const isPassed = dateItem.isPassed;
-
-        return (
-          <div class={`p-3 border rounded shadow-sm ${
-            isPassed
-              ? 'border-gray-200 dark:border-gray-700'
-              : isHighlighted
-                ? 'border-amber-200 dark:border-amber-700'
-                : 'border-indigo-200 dark:border-indigo-700'
-          }`}>
-            <div class="flex justify-between">
-              <div>
-                <h3 class={`font-medium ${
-                  isPassed
-                    ? 'text-gray-500 dark:text-gray-400'
+          return (
+            <div class="relative" style={`flex-basis: ${100/sortedDates.length}%; max-width: ${100/sortedDates.length}%`}>
+              <div class={`absolute left-1/2 top-[5rem] -translate-x-1/2 w-4 h-4 rounded-full ${
+                isPassed
+                  ? 'bg-[#1A7A64]'
+                  : isCurrent
+                    ? 'bg-[#FF9F1C] ring-4 ring-[#FF9F1C]/20'
                     : isHighlighted
-                      ? 'text-amber-700 dark:text-amber-300'
-                      : 'text-indigo-700 dark:text-indigo-300'
+                      ? 'bg-emerald-500 ring-4 ring-emerald-500/20'
+                      : 'bg-gray-300'
+              }`}></div>
+
+              <div class={`absolute w-36 text-center ${
+                isEven ? '-top-20' : 'top-28'
+              } left-1/2 -translate-x-1/2 transition-all duration-300`}>
+                <p class={`text-xs font-medium mb-1 ${
+                  isPassed
+                    ? 'text-[#1A7A64]'
+                    : isCurrent
+                      ? 'text-[#FF9F1C]'
+                      : isHighlighted
+                        ? 'text-emerald-500'
+                        : 'text-gray-500'
                 }`}>
-                  {dateItem.event}
-                </h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
                   {formatDateWithSuffix(dateItem.date)}
                 </p>
-              </div>
-              <div class={`flex-shrink-0 ml-4 w-12 h-12 rounded-full flex items-center justify-center ${
-                isPassed
-                  ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
-                  : isHighlighted
-                    ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300'
-                    : 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300'
-              }`}>
-                <div class="text-center">
-                  <span class="text-lg font-bold">{new Date(dateItem.date).getDate()}</span>
-                  <span class="block text-xs uppercase">{new Date(dateItem.date).toLocaleDateString('en-US', { month: 'short' })}</span>
-                </div>
+                <p class="text-sm font-medium text-gray-800">{dateItem.event}</p>
               </div>
             </div>
+          );
+        })}
+      </div>
+    </div>
 
-            {!isPassed && (
-              <div class="mt-2">
-                {eventType === "physical" && (
-                  <span class="inline-block px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-300 text-xs rounded">
-                    Event
-                  </span>
-                )}
-                {isHighlighted && eventType !== "physical" && (
-                  <span class="inline-block px-2 py-0.5 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-300 text-xs rounded">
-                    Current
-                  </span>
-                )}
+    {/* Mobile View - Vertical Timeline */}
+    <div class="md:hidden mb-8">
+      <div class="relative pl-10 pb-2">
+        {/* Vertical timeline line */}
+        <div class="absolute left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-500/50 to-gray-200 rounded-full"></div>
+
+        <div class="space-y-8">
+          {sortedDates.map((dateItem, index) => {
+            const isPassed = dateItem.isPassed;
+            const isCurrent = index === currentEventIndex || dateItem.isCurrent;
+            const isHighlighted = dateItem.isHighlighted;
+
+            return (
+              <div class="relative">
+                {/* Node on vertical line */}
+                <div class={`absolute -left-6 top-1 w-4 h-4 rounded-full z-10 ${
+                  isPassed
+                    ? 'bg-[#1A7A64]'
+                    : isCurrent
+                      ? 'bg-[#FF9F1C] ring-2 ring-[#FF9F1C]/20'
+                      : isHighlighted
+                        ? 'bg-emerald-500 ring-2 ring-emerald-500/20'
+                        : 'bg-gray-300'
+                } ${isCurrent ? 'animate-pulse' : ''}`}></div>
+
+                {/* Connector line */}
+                <div class={`absolute -left-2 top-3 w-5 h-0.5 ${
+                  isPassed
+                    ? 'bg-[#1A7A64]'
+                    : isCurrent
+                      ? 'bg-[#FF9F1C]'
+                      : isHighlighted
+                        ? 'bg-emerald-500'
+                        : 'bg-gray-300'
+                }`}></div>
+
+                {/* Event card */}
+                <div class={`pl-4 pb-2 border-l-2 ${
+                  isPassed
+                    ? 'border-[#1A7A64] text-[#1A7A64]'
+                    : isCurrent
+                      ? 'border-[#FF9F1C] text-[#FF9F1C]'
+                      : isHighlighted
+                        ? 'border-emerald-500 text-emerald-500'
+                        : 'border-gray-300 text-gray-500'
+                }`}>
+                  <p class="text-xs font-semibold">
+                    {formatDateWithSuffix(dateItem.date)}
+                  </p>
+                  <h3 class="text-base font-semibold text-gray-800 mt-1">
+                    {dateItem.event}
+                  </h3>
+
+                  {/* Status tag */}
+                  <div class={`mt-1 inline-block px-2 py-0.5 text-xs font-medium rounded-full ${
+                    isPassed
+                      ? 'bg-[#1A7A64]/10 text-[#1A7A64]'
+                      : isCurrent
+                        ? 'bg-[#FF9F1C]/20 text-[#FF9F1C]'
+                        : isHighlighted
+                          ? 'bg-emerald-500/20 text-emerald-500'
+                          : 'bg-gray-100 text-gray-500'
+                  }`}>
+                    {isPassed ? 'Completed' : isCurrent ? 'Active' : 'Upcoming'}
+                  </div>
+                </div>
               </div>
-            )}
-          </div>
-        );
-      })}
-
-      <div class="text-center mt-4">
-        <button class="hide-all-btn px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-md">
-          Return to Timeline
-        </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <style>
+  @keyframes pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(255, 159, 28, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 8px rgba(255, 159, 28, 0);
+    }
+  }
+
+  .animate-pulse {
+    animation: pulse 2s infinite;
+  }
+
   /* Hide scrollbar but keep functionality */
   .hide-scrollbar {
     scrollbar-width: none; /* Firefox */
@@ -286,74 +317,10 @@ const progressPercentage = calculateProgress();
   .hide-scrollbar::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
   }
+
+  /* Timeline container positioning */
+  .important-dates-section {
+    position: relative;
+    overflow-x: hidden;
+  }
 </style>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Mobile view toggle
-    const viewAllBtn = document.querySelector('.view-all-btn');
-    const hideAllBtn = document.querySelector('.hide-all-btn');
-    const timelineWrapper = document.querySelector('.timeline-wrapper');
-    const mobileList = document.querySelector('.mobile-dates-list');
-
-    if (viewAllBtn && hideAllBtn && timelineWrapper && mobileList) {
-      viewAllBtn.addEventListener('click', function() {
-        timelineWrapper.classList.add('hidden');
-        viewAllBtn.classList.add('hidden');
-        mobileList.classList.remove('hidden');
-      });
-
-      hideAllBtn.addEventListener('click', function() {
-        timelineWrapper.classList.remove('hidden');
-        viewAllBtn.classList.remove('hidden');
-        mobileList.classList.add('hidden');
-      });
-    }
-
-    // Scroll to upcoming events
-    const timelineNodes = document.querySelector('.timeline-nodes');
-    if (timelineNodes) {
-      // Find the closest upcoming event
-      const today = new Date().getTime();
-      const nodes = document.querySelectorAll('.timeline-node');
-      let closestUpcoming = null;
-      let closestDiff = Infinity;
-
-      nodes.forEach(node => {
-        const dateText = node.querySelector('.text-sm.font-medium').textContent.trim();
-        const monthYear = dateText.split(' ');
-        // Create a rough date from the text (precision doesn't matter, just need approximate)
-        const nodeDate = new Date(`${monthYear[0]} 1, ${new Date().getFullYear()}`).getTime();
-        const diff = nodeDate - today;
-
-        // Find the event closest to today but in the future
-        if (diff > 0 && diff < closestDiff) {
-          closestDiff = diff;
-          closestUpcoming = node;
-        }
-      });
-
-      // Scroll to the upcoming event or center the timeline
-      setTimeout(() => {
-        if (closestUpcoming) {
-          // Get node position and scroll to it
-          const nodeRect = closestUpcoming.getBoundingClientRect();
-          const containerRect = timelineNodes.getBoundingClientRect();
-          timelineNodes.scrollLeft = closestUpcoming.offsetLeft - containerRect.width / 2 + nodeRect.width / 2;
-        } else {
-          // Default: center the timeline
-          const scrollWidth = timelineNodes.scrollWidth;
-          timelineNodes.scrollLeft = (scrollWidth - timelineNodes.clientWidth) / 2;
-        }
-      }, 300);
-
-      // Basic horizontal scroll with mouse wheel
-      timelineNodes.addEventListener('wheel', function(e) {
-        if (e.deltaY !== 0) {
-          e.preventDefault();
-          this.scrollLeft += e.deltaY;
-        }
-      });
-    }
-  });
-</script>

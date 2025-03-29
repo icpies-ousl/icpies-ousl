@@ -4,7 +4,7 @@ import Container from "@/components/primitives/Container.astro";
 import Link from "@/components/primitives/Link.astro";
 import Blob from "@/components/sections/Blob.astro";
 import Countdown from "@/components/primitives/Countdown.astro";
-
+import icpies from "../../assets/pages/about/icpies.png"
 interface Props {
   headline?: string;
   title: string;
@@ -34,7 +34,7 @@ const {
   eventDate = defaultEventDate,
   venue = "Colombo, Sri Lanka",
   format = "Hybrid Conference",
-  imageSrc = "/about.png",
+  imageSrc = "",
 } = Astro.props;
 ---
 
@@ -65,13 +65,13 @@ const {
   <Container>
     <div class="flex flex-col items-center">
       <!-- Centered Hero image -->
-      <div class="w-full max-w-4xl mx-auto mb-12">
+      <div class="w-full max-w-6xl mx-auto mb-12">
         <div class="relative z-10">
           <div class="relative">
             <!-- Image container with frame -->
             <div class="relative z-10 rounded-lg overflow-hidden shadow-xl border-1 border-white">
               <img
-                src={imageSrc}
+                src="src/assets/pages/about/icpies.svg"
                 alt="ICPIES Conference 2025"
                 class="w-full h-auto object-cover hero-image"
                 width="1200"
@@ -84,34 +84,7 @@ const {
       </div>
 
       <!-- Text content below image -->
-      <div class="w-full max-w-4xl mx-auto text-center">
-        <h1
-          data-hero-reveal
-          class="headline text-3xl md:text-4xl lg:text-4xl leading-tight mb-4 font-bold text-[#2C3E50]"
-        >
-          2<span class="superscript-text">nd</span> International Conference on Plastics,
-          Innovations and Environmental Sustainability
-        </h1>
-
-        <h2
-          data-hero-reveal
-          class="title text-xl md:text-2xl leading-tight mb-4 font-semibold text-[#2C3E50]"
-          set:html={title}
-        />
-
-        <p
-          data-hero-reveal
-          class="text-base md:text-lg font-medium mb-6 text-[#0D3B66] max-w-2xl mx-auto"
-          set:html={subtitle.replace(/<u>(.*?)<\/u>/g, (_, text) => {
-            if (text === "Plastics") {
-              return `<span class="highlighted-text plastics-highlight">${text}</span>`;
-            } else if (text === "Sustainable Future") {
-              return `<span class="highlighted-text sustainable-highlight">${text}</span>`;
-            }
-            return `<span class="highlighted-text">${text}</span>`;
-          })}
-        />
-
+      <div class="w-full max-w-6xl mx-auto text-center">
         <!-- Event Badges -->
         <div class="flex flex-wrap justify-center gap-3 mb-8">
           <div

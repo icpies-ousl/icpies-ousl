@@ -116,37 +116,20 @@ function getIconForTopic(topic: string): string {
   title="Conference Tracks | ICPIES 2025"
   description="Explore the research tracks for the International Conference on Plastics, Innovations, and Environmental Sustainability (ICPIES) 2025."
 >
-  <section class="py-32 bg-gradient-to-b from-[#1A7A64]/5 to-white">
+  <section class="py-32 bg-gradient-to-b from-[#1A7A64]/5 to-white rounded-2xl mb-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <h1 class="text-4xl md:text-5xl font-bold text-[#2C3E50] mb-6">
         Conference Tracks
-      </h1>
+	</h1>
+	<div class="w-32 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-10"></div>
       <p class="text-xl text-[#2C3E50]/80 max-w-3xl mx-auto">
         Explore our specialized research areas addressing critical challenges in plastic pollution,
         innovation, and environmental sustainability
       </p>
-      <div class="w-32 h-1 bg-gradient-to-r from-[#1A7A64] to-[#4ECDC4] rounded-full mx-auto mb-10"></div>
     </div>
   </section>
 
   <Container>
-    <!-- Overview Section -->
-    <div class="mb-16 py-8">
-      <div class="max-w-4xl mx-auto">
-        <h2 class="text-[2rem] font-semibold text-[#2C3E50] mb-6">Overview</h2>
-        <p class="text-lg text-[#2C3E50]/80 mb-6">
-          ICPIES 2025 features eight specialized tracks covering the most pressing issues in plastics,
-          innovation, and environmental sustainability. Each track provides a focused platform for
-          researchers, policymakers, and industry professionals to share their latest findings and
-          collaborate on solutions.
-        </p>
-        <p class="text-lg text-[#2C3E50]/80">
-          Submissions are welcome across all tracks, and interdisciplinary approaches that span
-          multiple areas are especially encouraged.
-        </p>
-      </div>
-    </div>
-
 	<div class="mt-12 mb-20">
 	  <h2 class="text-3xl font-bold text-[#2C3E50] mb-8 text-center">Our Research Tracks</h2>
 
@@ -163,8 +146,6 @@ function getIconForTopic(topic: string): string {
 				  class="w-full h-full object-cover"
 				/>
 			  </div>
-
-			  <!-- Track number -->
 			  <div
 				class="absolute -top-3 -right-3 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-xl"
 				style={`background-color: ${track.color}`}

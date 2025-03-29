@@ -76,8 +76,8 @@ function getIconForTopic(topic: string): string {
 <div class="py-10" id="conference-tracks">
   <div class="max-w-6xl mx-auto px-4">
     <!-- More compact title section -->
-	<div class="text-center mb-10">
-		<h2 class="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-white mb-3">{title}</h2>
+    <div class="text-center mb-10">
+        <h2 class="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-white mb-3">{title}</h2>
       {description &&
         <p class="max-w-3xl mx-auto text-[#2C3E50]/70 leading-relaxed text-xs md:text-sm">
           {description}
@@ -88,9 +88,9 @@ function getIconForTopic(topic: string): string {
     <!-- Grid layout for more compact presentation -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       {tracks.map((track, index) => (
-        <div class="flex flex-row items-center gap-3 p-3 bg-white rounded-lg shadow-sm transition-all duration-300 hover:shadow-md border border-gray-100 group">
-          <!-- Smaller image -->
-          <div class="flex-shrink-0 relative">
+        <div class="flex flex-row items-start gap-3 p-3 bg-white rounded-lg shadow-sm transition-all duration-300 hover:shadow-md border border-gray-100 group">
+          <!-- Smaller image - moved to align with top for more text space -->
+          <div class="flex-shrink-0 relative mt-1">
             <div class="w-12 h-12 md:w-16 md:h-16 rounded-full overflow-hidden border-2" style={`border-color: ${track.color || defaultColors[index % defaultColors.length]}`}>
               <img
                 src={track.image}
@@ -109,10 +109,10 @@ function getIconForTopic(topic: string): string {
             </div>
           </div>
 
-          <!-- Track details -->
-          <div class="flex-1 flex flex-col justify-center min-w-0">
-            <!-- Title with no margin -->
-            <h3 class="text-base font-bold truncate"
+          <!-- Track details - changed to align items at start -->
+          <div class="flex-1 flex flex-col min-w-0">
+            <!-- Title without truncate -->
+            <h3 class="text-base font-bold break-words"
                 style={`color: ${track.color || defaultColors[index % defaultColors.length]}`}>
               {track.title}
             </h3>
@@ -121,7 +121,7 @@ function getIconForTopic(topic: string): string {
             <div class="flex items-center flex-wrap gap-x-2 mt-1">
               {track.subtitle && (
                 <p class="text-xs text-gray-500 inline-block">
-                  {track.subtitle.length > 30 ? track.subtitle.substring(0, 30) + "..." : track.subtitle}
+                  {track.subtitle}
                 </p>
               )}
 
@@ -165,8 +165,8 @@ function getIconForTopic(topic: string): string {
               )}
             </div>
 
-            {/* Truncated description - single line only */}
-            <p class="text-gray-600 text-xs mt-1 line-clamp-1">{track.description}</p>
+            {/* Description - increased to two lines */}
+            <p class="text-gray-600 text-xs mt-1 line-clamp-2">{track.description}</p>
           </div>
         </div>
       ))}
@@ -181,7 +181,6 @@ function getIconForTopic(topic: string): string {
     cursor: pointer;
     transition: all 0.2s ease;
   }
-
   .group::after {
     content: "";
     position: absolute;
