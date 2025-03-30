@@ -15,7 +15,7 @@ import { Image } from "astro:assets";
 const { name, role, title, affiliation, image, linkedin, email } = Astro.props;
 
 // Default image if none provided
-const profileImage = image || "./src/assets/committee/default-avatar.jpg";
+const defaultImage = "/src/assets/committee/default-avatar.png";
 const isImportedImage = typeof image === "object";
 ---
 
@@ -34,14 +34,26 @@ const isImportedImage = typeof image === "object";
     <div
       class="w-full h-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200"
     >
+      {
+        isImportedImage ? (
+          <Image
+            src={image}
+            alt={name}
+            class="w-full h-full object-cover"
+            width={300}
+            height={300}
+          />
+        ) : (
           <img
             src={image}
             alt={name}
             class="w-full h-full object-cover"
-            width={144}
-            height={144}
+            width={300}
+            height={300}
+            onError={`this.onerror=null; this.src='${defaultImage}'`}
           />
         )
+      }
       <!-- Subtle overlay gradient -->
       <div
         class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
