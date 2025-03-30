@@ -5,13 +5,13 @@ import Container from "@/components/primitives/Container.astro";
 // Define your conference dates directly in the page
 const conferenceDates = [
   {event: "Call for Abstracts", date: "2025-03-15", isPassed: false, isHighlighted: true, isCurrent: true}, // Marked as current
-  {event: "Deadline for Abstracts Submission", date: "2025-04-04", isPassed: false, isHighlighted: false},
-  {event: "Notification of Acceptance", date: "2025-05-02", isPassed: false},
+  {event: "Deadline for Abstracts Submission", date: "2025-04-20", isPassed: false, isHighlighted: false},
+  {event: "Notification of Acceptance", date: "2025-05-30", isPassed: false},
   {event: "Deadline for Selected Full Papers Submission", date: "2025-06-06", isPassed: false, isHighlighted: false},
   {event: "Camera-ready Copy Submission", date: "2025-06-20", isPassed: false, isHighlighted: false},
   {event: "Early Bird Registration", date: "2025-07-06", isPassed: false, isHighlighted: false},
   {event: "Registration Deadline", date: "2025-07-18", isPassed: false, isHighlighted: false},
-  {event: "Conference Days", date: "2025-08-28", isPassed: false, isHighlighted: false, eventType: "physical"},
+  {event: "Conference Days", date: "2025-08-28", isPassed: false, isHighlighted: false, eventType: "hybrid"},
 ];
 
 // Helper to check if a date has passed
@@ -75,7 +75,7 @@ const seo = {
 <BaseLayout seo={seo}>
   <div class="py-16 pb-32">
     <Container>
-      <section class="py-16 bg-gradient-to-b from-[#1A7A64]/5 to-white rounded-2xl mb-16">
+      <section class="py-16 bg-gradient-to-b from-[#1A7A64]/5 to-white rounded-2xl">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 class="text-4xl md:text-5xl font-bold text-[#2C3E50] mb-6">
             Important Conference Dates

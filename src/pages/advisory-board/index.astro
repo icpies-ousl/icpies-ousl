@@ -1,0 +1,275 @@
+---
+import Container from "@/components/primitives/Container.astro";
+import CommitteeMemberCard, {
+  type Member,
+} from "@/components/sections/CommitteeMemberCard.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+const categories = [
+  "Conference Chair",
+  "Advisory Board"
+];
+
+const members: Member[] = [
+  // Advisory Board
+  {
+    name: "Prof. S Vasanthapriyan",
+    title: "Advisory Board Chair",
+    affiliation: "Sabaragamuwa University of Sri Lanka",
+    role: "Advisory Board Chair",
+    image: "./committee/Prof. S Vasanthapriyan.svg",
+    country: "LK",
+    email: "priyan@foc.sab.ac.lk",
+    category: "Advisory Board",
+  },
+  {
+    name: "Prof. Kazunari Sei",
+    title: "Advisory Board Member",
+    affiliation: "University of Toyama",
+    role: "International Advisor",
+    image: "./committee/Prof. Kazunari Sei.svg",
+    country: "JP",
+    category: "Advisory Board",
+  },
+  {
+    name: "Prof. Masafumi Tateda",
+    title: "Advisory Board Member",
+    affiliation: "",
+    role: "International Advisor",
+    image: "./committee/default-avatar.png",
+    country: "JP",
+    category: "Advisory Board",
+  },
+  {
+    name: "Mrs. Shalene",
+    title: "Advisory Board Member",
+    affiliation: "",
+    role: "Advisory Board Member",
+    image: "./committee/default-avatar.png",
+    country: "LK",
+    category: "Advisory Board",
+  },
+  {
+    name: "Dr. Prasanna S. Haddela",
+    title: "Advisory Board Member",
+    affiliation: "SLIIT",
+    role: "Advisory Board Member",
+    image: "./committee/default-avatar.png",
+    country: "LK",
+    category: "Advisory Board",
+  },
+  {
+    name: "Prof. Sunil Herath",
+    title: "Advisory Board Member",
+    affiliation: "Griffith University, Australia",
+    role: "Advisory Board Member",
+    image: "./committee/Prof. Sunil Herath.svg",
+    country: "AUS",
+    category: "Advisory Board",
+  },
+  {
+    name: "Prof. S. A. M. A. N. S. Senanayake",
+    title: "Advisory Board Member",
+    affiliation: "The Open University of Sri Lanka",
+    role: "Advisory Board Member",
+    image: "./committee/default-avatar.png",
+    country: "LK",
+    category: "Advisory Board",
+  },
+  {
+    name: "Prof. Mahesh Jayaweera",
+    title: "Advisory Board Member",
+    affiliation: "University of Moratuwa",
+    role: "Advisory Board Member",
+    image: "./committee/default-avatar.png",
+    country: "LK",
+    email: "mahesh@uom.lk",
+    category: "Advisory Board",
+  },
+];
+---
+
+<BaseLayout
+  title="Advisory Board | ICPIES 2025"
+  description=""
+>
+<div class="relative bg-gradient-to-b from-[#1A7A64]/5 to-white rounded-2xl">
+    <div class="absolute inset-0">
+      <div class="absolute inset-y-0 left-0 w-1/2"></div>
+    </div>
+    <div class="relative max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
+      <h1 class="text-4xl md:text-5xl font-bold text-[#2C3E50] text-center mb-4">
+       Advisory Board
+      </h1>
+      <div class="mt-8 flex justify-center">
+        <div
+          class="h-1 w-32 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full"
+        >
+        </div>
+      </div>
+    </div>
+  </div>
+    <Container>
+      <div class="py-5">
+        {
+          categories.map((category) => {
+            const categoryMembers = members.filter(
+              (member) => member.category === category
+            );
+            if (categoryMembers.length === 0) return null;
+
+            return (
+              <div
+                id={category.toLowerCase().replace(/\s+/g, "-")}
+                class="scroll-mt-24"
+              >
+                <div class="flex justify-center">
+                  <div
+                    class={`grid gap-8 ${
+                      categoryMembers.length === 1
+                        ? "grid-cols-1 max-w-lg"
+                        : categoryMembers.length <= 4
+                          ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-7xl"
+                          : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-7xl"
+                    }`}
+                  >
+                    {categoryMembers.map((member, index) => (
+                      <div
+                        class={`card-container w-full h-full ${index >= 4 ? 'sm:col-start-2 sm:col-end-4 lg:col-start-3 lg:col-end-4 xl:col-start-auto xl:col-end-auto justify-self-center' : ''}`}
+                        style="max-width: 300px;"
+                      >
+                        <CommitteeMemberCard {...member} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        }
+      </div>
+    </Container>
+  <!-- Back to top button -->
+  <div class="fixed bottom-8 right-8 z-30">
+    <button
+      id="backToTop"
+      class="bg-emerald-600 text-white rounded-full p-3 shadow-lg hover:bg-emerald-700 transition-all"
+      aria-label="Back to top"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+      </svg>
+    </button>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* Committee card hover effects */
+  .committee-card {
+    transition: all 0.3s ease;
+  }
+
+  .committee-card:hover {
+    transform: translateY(-5px);
+  }
+</style>
+
+<script>
+  // Back to top button functionality
+  document.addEventListener("DOMContentLoaded", function () {
+    const backToTopButton = document.getElementById("backToTop");
+
+    // Show/hide button based on scroll position
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 300) {
+        backToTopButton.classList.add("opacity-100");
+        backToTopButton.classList.remove("opacity-0");
+      } else {
+        backToTopButton.classList.add("opacity-0");
+        backToTopButton.classList.remove("opacity-100");
+      }
+    });
+
+    // Equal height cards function
+    document.addEventListener("DOMContentLoaded", function () {
+      // Function to equalize card heights within each category
+      function equalizeCardHeights() {
+        document
+          .querySelectorAll('[id^="conference-chair"], [id^="advisory-board"]')
+          .forEach((category) => {
+            const cards = category.querySelectorAll(".group");
+            if (cards.length === 0) return;
+
+            // Reset heights
+            cards.forEach((card) => (card.style.height = ""));
+
+            // Find max height
+            let maxHeight = 0;
+            cards.forEach((card) => {
+              maxHeight = Math.max(maxHeight, card.offsetHeight);
+            });
+
+            // Apply max height to all cards
+            cards.forEach((card) => (card.style.height = `${maxHeight}px`));
+          });
+      }
+
+      // Run on load and resize
+      equalizeCardHeights();
+      window.addEventListener("resize", equalizeCardHeights);
+    });
+
+    // Scroll to top when clicked
+    backToTopButton.addEventListener("click", function () {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    });
+
+    // Highlight active category in navigation
+    const observerOptions = {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0.1,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const id = entry.target.getAttribute("id");
+        if (entry.isIntersecting) {
+          document.querySelectorAll(".sticky a").forEach((link) => {
+            link.classList.remove("bg-emerald-100", "text-emerald-800");
+          });
+          document
+            .querySelector(`.sticky a[href="#${id}"]`)
+            .classList.add("bg-emerald-100", "text-emerald-800");
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll("section > div[id]").forEach((section) => {
+      observer.observe(section);
+    });
+  });
+</script>
