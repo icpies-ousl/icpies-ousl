@@ -15,7 +15,7 @@ import { Image } from "astro:assets";
 const { name, role, title, affiliation, image, linkedin, email } = Astro.props;
 
 // Default image if none provided
-const profileImage = image || "./committee/default-avatar.jpg";
+const profileImage = image || "./src/assets/committee/default-avatar.jpg";
 const isImportedImage = typeof image === "object";
 ---
 
@@ -36,7 +36,7 @@ const isImportedImage = typeof image === "object";
     >
       {
         isImportedImage ? (
-          <Image
+          <img
             src={image}
             alt={name}
             class="w-full h-full object-cover"
