@@ -5,7 +5,7 @@ import CommitteeMemberCard, {
 } from "@/components/sections/CommitteeMemberCard.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 const categories = [
-  "Conference Chair",
+  "Conference Chairs",
   "Technical Program Committee",
   "Advisory Board",
   "Organizing Committee",
@@ -16,12 +16,12 @@ const categories = [
   "International Relations",
   "Publicity Committee",
   "Special Sessions",
-  "Indexing Committe",
+  "Indexing Committee",
   "Awards Committee",
   "Workshop Committee",
   "Local Organizing Committee",
   "Conference Tracks Committee",
-  "Conference Secretariat",
+  "Conference Secretaries",
   "Web Committee",
 ];
 import { Image } from "astro:assets";
@@ -53,6 +53,9 @@ import drChamila from "@/assets/committee/drChamila.svg";
 import proBandulee from "@/assets/committee/drBandulee.svg"
 import proMadu from "@/assets/committee/Madhubashini.svg"
 import senanayake from "@/assets/committee/Senanayake.svg"
+import mrshalindu from "@/assets/committee/Shalindu.svg"
+import mszeena from "@/assets/committee/msZeena.svg"
+
 const members: Member[] = [
   // Conference Chairs
   {
@@ -63,7 +66,7 @@ const members: Member[] = [
     image: proBandulee,
     country: "LK",
     email: "bcliy@ou.ac.lk",
-    category: "Conference Chair",
+    category: "Conference Chairs",
   },
   {
     name: "Prof. Jagath Manatunge",
@@ -73,7 +76,7 @@ const members: Member[] = [
     image: defaultAvatar,
     country: "LK",
     email: "manatunge@uom.lk",
-    category: "Conference Chair",
+    category: "Conference Chairs",
   },
   //TPC Chair
   {
@@ -312,7 +315,7 @@ const members: Member[] = [
     category: "Financial Committee",
   },
   {
-    name: "Eng. Sampath Wickramanayake",
+    name: "Eng. Sampath Wickramasinghe",
     title: "Registration Chair",
     affiliation: "The Open University of Sri Lanka",
     role: "Registration Chair",
@@ -399,7 +402,7 @@ const members: Member[] = [
     title: "Special Session Chair",
     affiliation: "The Open University of Sri Lanka",
     role: "Special Session Chair",
-    image: defaultAvatar,
+    image: mrshalindu,
     country: "LK",
     email: "ddran@ou.ac.lk",
     category: "Special Sessions",
@@ -487,17 +490,17 @@ const members: Member[] = [
     image: engHimanujahn,
     country: "LK",
     email: "himanujahn@sjp.ac.lk",
-    category: "Conference Secretariat",
+    category: "Conference Secretaries",
   },
   {
     name: "Eng. Zeena Weerabangsa",
     title: "Conference Secretary",
     affiliation: "The Open University of Sri Lanka",
     role: "Conference Secretary",
-    image: defaultAvatar,
+    image: mszeena,
     country: "LK",
     email: "mzwee@ou.ac.lk",
-    category: "Conference Secretariat",
+    category: "Conference Secretaries",
   },
   // Web Committee
   {
